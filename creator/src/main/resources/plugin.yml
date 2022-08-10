@@ -1,0 +1,8 @@
+name: TJmoduleCreator
+author: Prouge
+version: ${project.version}
+description: ${project.description}
+main: me.prouge.tryjump.creator.TryJump
+commands:
+  module:
+    aliases: md

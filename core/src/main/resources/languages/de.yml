@@ -1,0 +1,14 @@
+PLAYER_JOIN_MESSAGE: "&6>> &eTryJump &6: &7{PLAYER} ist dem Spiel beigetreten!"
+LOBBY_ACTIONBAR: "&6&l>> &e&lSpieler: &a&l{CURRENT_PLAYERS}/{MAX_PLAYERS} &6&l: &e&lMindestens: &b&l{MIN_PLAYERS} &6&l<<"
+LOBBY_COUNTDOWN: "&6>> &eTryJump &6: &7Noch &b{SECONDS} &7Sekunden bis zum Start!"
+LOBBY_TELEPORT: "&6>> &7Teleportiere ..."
+GAME_COUNTDOWN: "&6>> &eTryJump &6: &7Das Spiel startet in &b{SECONDS} Sekunden&7."
+GAME_GO: "&6>> &eTryJump &6: &bGo!"
+SETUP_SPAWN_SET: "&6>> &eTryJump &6: &bDer Spawn {SPAWN} wurde erfolgreich gesetzt!"
+PLAYER_QUIT_MESSAGE: "&6>> &eTryJump &6: &7Der Spieler &a{PLAYER} &7ist ausgeschieden!"
+GAME_ACTIONBAR: "&6&l>> &a&lUnit {UNIT}: &e&l{UNITNAME} &6&l: &a&l{DIFFICULTY} &6&l<<"
+
+
+GAME_COINS_ADD: "&6>> &eTryJump &6: &7Du hast &bUnit {UNITID} &7geschafft! Du erhältst §a{tokens} Tokens&7."
+
+ITEM_INSTANT_DEATH: "&c&lInstant-Tod(TM) &7&o<Rechtsklick>"

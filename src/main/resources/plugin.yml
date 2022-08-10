@@ -1,6 +1,0 @@
-name: ${project.artifactId}
-author: Prouge
-version: ${project.version}
-description: ${project.description}
-main: me.prouge.tryjump.TryJump
-

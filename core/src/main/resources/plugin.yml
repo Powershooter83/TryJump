@@ -1,0 +1,8 @@
+name: TJcore
+author: Prouge
+version: ${project.version}
+description: ${project.description}
+main: me.prouge.tryjump.core.TryJump
+commands:
+  test:
+    aliases: t
