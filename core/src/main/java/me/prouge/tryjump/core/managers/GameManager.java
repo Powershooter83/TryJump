@@ -64,7 +64,7 @@ public class GameManager {
                         tp.addTokens(500 );
                 }
 
-
+                //Test
                 tp.updateModuleId();
                 tp.setSpawnLocation(location);
                 chatWriter.print(tp, Message.PLAYER_JOIN_MESSAGE, null);
