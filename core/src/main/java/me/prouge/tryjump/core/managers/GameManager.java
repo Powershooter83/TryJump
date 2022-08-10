@@ -69,7 +69,7 @@ public class GameManager {
                 tp.setSpawnLocation(location);
                 chatWriter.print(tp, Message.PLAYER_JOIN_MESSAGE, null);
 
-
+                //Test2
 
 
             }
