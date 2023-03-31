@@ -8,10 +8,9 @@ import me.prouge.tryjump.core.TryJump;
 public class InjectionModule extends AbstractModule {
     private final TryJump plugin;
 
-    public InjectionModule(TryJump plugin) {
+    public InjectionModule(final TryJump plugin) {
         this.plugin = plugin;
-        Injector injector = this.createInjector();
-        injector.injectMembers(this);
+        this.createInjector().injectMembers(this);
     }
 
     private Injector createInjector() {

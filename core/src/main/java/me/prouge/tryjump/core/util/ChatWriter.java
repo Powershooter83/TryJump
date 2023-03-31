@@ -16,7 +16,7 @@ public class ChatWriter {
 
     @Inject
     private TryJump plugin;
-    private HashMap<String, FileConfiguration> languages = new HashMap<>();
+    private final HashMap<String, FileConfiguration> languages = new HashMap<>();
 
     public void print(TryPlayer p, Message msg, String[][] values) {
         if (this.languages.isEmpty()) {

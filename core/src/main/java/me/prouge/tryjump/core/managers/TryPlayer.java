@@ -5,8 +5,8 @@ import org.bukkit.entity.Player;
 
 public class TryPlayer {
 
-    private String language;
-    private Player player;
+    private final String language;
+    private final Player player;
 
     private Location spawnLocation;
 
@@ -54,18 +54,17 @@ public class TryPlayer {
         this.unitDeaths++;
     }
 
-    public void addTokens(int tokens){
-        this.tokens+= tokens;
+    public void addTokens(int tokens) {
+        this.tokens += tokens;
     }
 
-    public int getUnitDeaths(){
+    public int getUnitDeaths() {
         return this.unitDeaths;
     }
 
-    public void resetUnitDeaths(){
+    public void resetUnitDeaths() {
         this.unitDeaths = 0;
     }
-
 
 
 }

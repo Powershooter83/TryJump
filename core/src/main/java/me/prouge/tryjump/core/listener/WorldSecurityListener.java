@@ -20,7 +20,6 @@ public class WorldSecurityListener implements Listener {
     @Inject
     private GameManager gameManager;
 
-
     @EventHandler
     public void onBlockBreakEvent(BlockBreakEvent e) {
         e.setCancelled(true);
@@ -54,15 +53,15 @@ public class WorldSecurityListener implements Listener {
     }
 
     @EventHandler
-    public void onItemDrop(PlayerDropItemEvent event){
-        if(!gameManager.getGamePhase().equals(Phase.Game_pvp)){
+    public void onItemDrop(PlayerDropItemEvent event) {
+        if (!gameManager.getGamePhase().equals(Phase.Game_pvp)) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent event){
-        if(!gameManager.getGamePhase().equals(Phase.Game_pvp)){
+    public void onInventoryClick(InventoryClickEvent event) {
+        if (!gameManager.getGamePhase().equals(Phase.Game_pvp)) {
             event.setCancelled(true);
         }
     }

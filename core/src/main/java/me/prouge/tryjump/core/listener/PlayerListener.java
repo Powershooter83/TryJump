@@ -10,9 +10,11 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import javax.inject.Inject;
+
+;
 
 
 public class PlayerListener implements Listener {
@@ -33,20 +35,21 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerMovement(PlayerMoveEvent e) {
-        if (gameManager.getGamePhase().equals(Phase.Game_starting)) {
-            e.getPlayer().teleport(e.getFrom());
-        }
-        if (gameManager.getGamePhase().equals(Phase.Game_running)) {
-            if (e.getPlayer().getLocation().getY() < 55) {
-                this.gameManager.teleportPlayer(e.getPlayer());
-            }
+        final Player player = e.getPlayer();
+        switch (gameManager.getGamePhase()) {
+            case Game_starting:
+                player.teleport(e.getFrom());
+            case Game_running:
+                if (player.getLocation().getY() < 55) {
+                    this.gameManager.teleportPlayer(player);
+                }
         }
     }
 
     @EventHandler
     public void pressurePlatePress(PlayerInteractEvent e) {
         if (e.getAction().equals(Action.PHYSICAL)) {
-            Player player = (Player) e.getPlayer();
+            Player player = e.getPlayer();
             if (e.getClickedBlock().getType().equals(Material.GOLD_PLATE)
                     && gameManager.getGamePhase().equals(Phase.Game_running)
                     && e.getClickedBlock().getLocation().subtract(0, 1, 0).getBlock().getType().equals(Material.DIAMOND_BLOCK)) {
@@ -55,8 +58,7 @@ public class PlayerListener implements Listener {
                 e.getClickedBlock().setType(Material.AIR);
                 e.getClickedBlock().getState().update();
             }
-
-        }else if(e.getPlayer().getItemInHand().getType().equals(Material.INK_SACK)){
+        } else if (e.getPlayer().getItemInHand().getType().equals(Material.INK_SACK)) {
             this.gameManager.instantDeath(e.getPlayer());
         }
     }

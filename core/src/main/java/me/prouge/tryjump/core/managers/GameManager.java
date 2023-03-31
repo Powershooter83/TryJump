@@ -1,6 +1,5 @@
 package me.prouge.tryjump.core.managers;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import me.prouge.tryjump.core.TryJump;
 import me.prouge.tryjump.core.module.MDifficulty;
 import me.prouge.tryjump.core.module.MLoader;
@@ -8,11 +7,8 @@ import me.prouge.tryjump.core.module.Module;
 import me.prouge.tryjump.core.util.ChatWriter;
 import me.prouge.tryjump.core.util.Message;
 import net.minecraft.server.v1_8_R3.IChatBaseComponent;
-import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
 import net.minecraft.server.v1_8_R3.PacketPlayOutTitle;
-import net.minecraft.server.v1_8_R3.PlayerConnection;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
@@ -31,29 +27,23 @@ import java.util.*;
 
 public class GameManager {
 
+    private final ArrayList<TryPlayer> playerArrayList = new ArrayList<>();
+    private final ArrayList<Location> spawnLocations = new ArrayList<>();
+    private final HashMap<MDifficulty, ArrayList<Module>> modules = new HashMap<>();
     @Inject
     private TryJump plugin;
     @Inject
     private ChatWriter chatWriter;
-
     @Inject
     private MLoader mLoader;
     private Phase gamePhase = Phase.Lobby_without_countdown;
-
-    private HashMap<MDifficulty, ArrayList<Module>> modules = new HashMap<>();
-
-
-    private final ArrayList<TryPlayer> playerArrayList = new ArrayList<>();
-
-    private final ArrayList<Location> spawnLocations = new ArrayList<Location>();
-
     private boolean hasRunningActionbar = false;
 
     public void updateModule(Player player, Location location) {
         this.playerArrayList.forEach(tp -> {
             if (tp.toPlayer() == player) {
 
-                switch (tp.getModuleId()){
+                switch (tp.getModuleId()) {
                     case 1:
                     case 2:
                     case 3:
@@ -67,7 +57,7 @@ public class GameManager {
                     case 9:
                         tp.addTokens(400);
                     case 10:
-                        tp.addTokens(500 );
+                        tp.addTokens(500);
                 }
 
                 //Test
@@ -83,7 +73,7 @@ public class GameManager {
     }
 
 
-    public void teleportPlayer(Player player) {
+    public void teleportPlayer(final Player player) {
         this.playerArrayList.forEach(tp -> {
             if (tp.toPlayer() == player) {
                 player.teleport(tp.getSpawnLocation());
@@ -92,28 +82,28 @@ public class GameManager {
     }
 
 
-    public void addPlayer(Player p) {
+    public void addPlayer(final Player player) {
         if (spawnLocations.size() == 0) {
             for (String spawn : plugin.getConfig().getConfigurationSection("Spawns").getKeys(false)) {
                 this.spawnLocations.add((Location) plugin.getConfig().get("Spawns." + spawn));
             }
         }
 
-        String language = p.spigot().getLocale().substring(0, p.spigot().getLocale().lastIndexOf('_'));
+        String language = player.spigot().getLocale().substring(0, player.spigot().getLocale().lastIndexOf('_'));
         List<String> languageFiles = Arrays.asList(Objects.requireNonNull(new File(plugin.getDataFolder().getPath() + "/languages").list()));
         if (!languageFiles.contains(language + ".yml")) {
             language = "de";
         }
-        TryPlayer tryPlayer = new TryPlayer(language, p, spawnLocations.get(0));
+        TryPlayer tryPlayer = new TryPlayer(language, player, spawnLocations.get(0));
         spawnLocations.remove(0);
 
         this.playerArrayList.add(tryPlayer);
-        sendPlayerJoinMessage(p);
+        sendPlayerJoinMessage(player);
         checkGamePhase();
         sendActionbar(tryPlayer);
         getModules();
 
-        p.teleport((Location) plugin.getConfig().get("Lobby"));
+        player.teleport((Location) plugin.getConfig().get("Lobby"));
 
     }
 
@@ -367,7 +357,7 @@ public class GameManager {
 
                 String text = "§c✖✖✖";
 
-                switch (tj.getUnitDeaths()){
+                switch (tj.getUnitDeaths()) {
                     case 0:
                         text = "§c✖§7✖✖";
                         break;
@@ -406,7 +396,7 @@ public class GameManager {
         }
         playerArrayList.forEach(tj -> {
             tj.toPlayer().setScoreboard(scoreboard);
-        } );
+        });
     }
 
 
