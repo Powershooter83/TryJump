@@ -8,8 +8,10 @@ import me.prouge.tryjump.core.module.Module;
 import me.prouge.tryjump.core.util.ChatWriter;
 import me.prouge.tryjump.core.util.Message;
 import net.minecraft.server.v1_8_R3.IChatBaseComponent;
+import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
 import net.minecraft.server.v1_8_R3.PacketPlayOutTitle;
 import net.minecraft.server.v1_8_R3.PlayerConnection;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -18,6 +20,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Scoreboard;
 
 import javax.inject.Inject;
 import java.io.File;
@@ -75,6 +81,7 @@ public class GameManager {
             }
         });
     }
+
 
     public void teleportPlayer(Player player) {
         this.playerArrayList.forEach(tp -> {
@@ -373,7 +380,6 @@ public class GameManager {
                 }
                 tj.updateUnitDeaths();
 
-
                 IChatBaseComponent emptyTitle = IChatBaseComponent.ChatSerializer.a("{\"text\": \"\"}");
                 IChatBaseComponent chatTitle = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + text + "\"}");
 
@@ -381,14 +387,26 @@ public class GameManager {
 
                 PacketPlayOutTitle length = new PacketPlayOutTitle(1, 19, 11);
 
-
                 ((CraftPlayer) player).getHandle().playerConnection.sendPacket(title);
                 ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.SUBTITLE, chatTitle));
                 ((CraftPlayer) player).getHandle().playerConnection.sendPacket(length);
-
-
             }
         });
+    }
+
+    //create scoreboard with player names and scores
+    public void createScoreboard() {
+        Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+        Objective objective = scoreboard.registerNewObjective("test", "dummy");
+        objective.setDisplayName("§6§lTJ§7§l-§6§lMC");
+        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+        for (TryPlayer tj : playerArrayList) {
+            Score score = objective.getScore(tj.toPlayer().getName());
+            score.setScore(tj.getUnitDeaths());
+        }
+        playerArrayList.forEach(tj -> {
+            tj.toPlayer().setScoreboard(scoreboard);
+        } );
     }
 
 
