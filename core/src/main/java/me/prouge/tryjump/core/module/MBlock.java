@@ -1,20 +1,20 @@
 package me.prouge.tryjump.core.module;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+//import com.fasterxml.jackson.annotation.JsonProperty;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
 public class MBlock {
 
-    @JsonProperty("positionX")
+   // @JsonProperty("positionX")
     private int positionX;
-    @JsonProperty("positionY")
+  //  @JsonProperty("positionY")
     private int positionY;
-    @JsonProperty("positionZ")
+   // @JsonProperty("positionZ")
     private int positionZ;
-    @JsonProperty("data")
+  //  @JsonProperty("data")
     private byte data;
-    @JsonProperty("type")
+  //  @JsonProperty("type")
     private Material type;
 
     public MBlock() {

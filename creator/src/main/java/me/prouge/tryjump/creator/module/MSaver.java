@@ -1,6 +1,6 @@
 package me.prouge.tryjump.creator.module;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+//import com.fasterxml.jackson.databind.ObjectMapper;
 import me.prouge.tryjump.creator.TryJump;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -72,7 +72,7 @@ public class MSaver {
         final FileWriter writer = new FileWriter(file);
 
         writer.write(getDirection(playerLocation) + ";" + name + ";" + difficulty + "01001023010000140141024023415433543");
-        writer.write(new ObjectMapper().writeValueAsString(blockList));
+     //   writer.write(new ObjectMapper().writeValueAsString(blockList));
         writer.flush();
         writer.close();
     }

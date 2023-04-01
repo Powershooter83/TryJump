@@ -1,7 +1,7 @@
 package me.prouge.tryjump.core.module;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+//import com.fasterxml.jackson.core.type.TypeReference;
+//import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
 
 import java.io.*;
@@ -23,11 +23,12 @@ public class MLoader {
         String content = com.google.common.io.Files.asCharSource(module, Charsets.UTF_8).read();
         String[] contentSplit = content.split("01001023010000140141024023415433543");
         String[] splitInformation = contentSplit[0].split(";");
-        return new Module(splitInformation[1],
-                splitInformation[0],
-                Enum.valueOf(MDifficulty.class, splitInformation[2].toUpperCase()),
-                new ObjectMapper().readValue(contentSplit[1], new TypeReference<List<MBlock>>() {
-                }));
+        return null;
+//        return new Module(splitInformation[1],
+//                splitInformation[0],
+//                Enum.valueOf(MDifficulty.class, splitInformation[2].toUpperCase()),
+//                new ObjectMapper().readValue(contentSplit[1], new TypeReference<List<MBlock>>() {
+//                }));
     }
 
 

@@ -53,16 +53,16 @@ public class WorldSecurityListener implements Listener {
     }
 
     @EventHandler
-    public void onItemDrop(PlayerDropItemEvent event) {
+    public void onItemDrop(PlayerDropItemEvent e) {
         if (!gameManager.getGamePhase().equals(Phase.Game_pvp)) {
-            event.setCancelled(true);
+            e.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
+    public void onInventoryClick(InventoryClickEvent e) {
         if (!gameManager.getGamePhase().equals(Phase.Game_pvp)) {
-            event.setCancelled(true);
+            e.setCancelled(true);
         }
     }
 

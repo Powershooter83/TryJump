@@ -25,8 +25,6 @@ public class TestCMD implements CommandExecutor {
             plugin.saveConfig();
             player.sendMessage("Der Spawn " + args[0] + " wurde gesetzt!");
         }
-
-
         return false;
     }
 }
