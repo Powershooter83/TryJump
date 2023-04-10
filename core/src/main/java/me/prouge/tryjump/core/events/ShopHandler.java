@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.scoreboard.Scoreboard;
 
 import javax.inject.Inject;
 
@@ -56,6 +57,7 @@ public class ShopHandler implements Listener {
 
                 if (tryPlayer.getTokens() >= price) {
                     tryPlayer.setTokens(tryPlayer.getTokens() - price);
+                    updateScore(player);
 
                     if (e.getCurrentItem().getType() == Material.RED_ROSE) {
                         player.setMaxHealth(player.getMaxHealth() + 2);
@@ -66,4 +68,15 @@ public class ShopHandler implements Listener {
                 }
         }
     }
+
+    private void updateScore(Player player) {
+        Scoreboard board = player.getScoreboard();
+        int tokens = gameImpl.getTryPlayer(player).getTokens();
+
+        player.setLevel(tokens);
+        board.getTeam(player.getName()).setSuffix(String.valueOf(tokens));
+
+        gameImpl.setTablist();
+    }
+
 }

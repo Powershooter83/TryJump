@@ -24,6 +24,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.inject.Inject;
 import java.io.File;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -149,8 +150,13 @@ public class GameImpl implements Game {
                         });
                         Bukkit.getScheduler().runTaskTimer(plugin,
                                 () -> {
-                                    scoreboardManager.updateScoreboard(playerArrayList, mapLength);
-                                    setTablist();
+                                    if (gamePhase == Phase.Game_running) {
+                                        scoreboardManager.updateScoreboard(playerArrayList, mapLength);
+                                        setTablist();
+                                    } else {
+                                        cancel();
+                                    }
+
                                 }, 0, 20);
 
                         cancel();
@@ -347,6 +353,8 @@ public class GameImpl implements Game {
 
         PacketPlayOutTitle length = new PacketPlayOutTitle(1, 19, 11);
 
+        this.setGamePhase(Phase.Game_shop);
+
         this.playerArrayList.forEach(tp -> {
             Player player = tp.getPlayer();
             ((CraftPlayer) player).getHandle().playerConnection.sendPacket(title);
@@ -357,11 +365,22 @@ public class GameImpl implements Game {
             player.getInventory().clear();
             player.getInventory().setItem(4, new ItemBuilder(Material.CHEST).setName("Shop").toItemStack());
             player.setLevel(tp.getTokens());
+            player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
         });
 
-        this.setGamePhase(Phase.Game_shop);
+        setTablist();
+        scoreboardManager.createLobbyScoreboard(this.playerArrayList);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (gamePhase == Phase.Game_shop) {
+                    scoreboardManager.updateLobbyScoreboard(playerArrayList);
+                } else {
+                    cancel();
+                }
+            }
+        }.runTaskTimer(plugin, 0, 20);
     }
-
 
     public void spawnModule(Player p, Location pressurePlate) {
         TryJumpPlayer player = null;
@@ -429,12 +448,28 @@ public class GameImpl implements Game {
     }
 
 
-    private void setTablist() {
+    public void setTablist() {
         this.playerArrayList.forEach(tp -> {
             Player player = Bukkit.getPlayer(tp.getUniqueId());
 
             player.setPlayerListName("§7[§6" + tp.getTokens() + "§7] §a" + player.getName());
         });
     }
+
+
+    private void startDeathMatch(){
+
+    }
+
+
+    public void skipShop() {
+        if (this.playerArrayList.stream().filter(TryJumpPlayer::isSkipped).count() == this.playerArrayList.size()) {
+            scoreboardManager.setTime(LocalTime.of(0, 0, 5));
+            playerArrayList.forEach(p -> chatWriter.print(p, Message.LOBBY_SHOP_SKIPPED, null));
+
+        }
+
+    }
+
 
 }

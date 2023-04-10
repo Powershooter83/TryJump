@@ -5,3 +5,4 @@ description: ${project.description}
 main: me.prouge.tryjump.core.TryJump
 commands:
   shop:
+  skip:

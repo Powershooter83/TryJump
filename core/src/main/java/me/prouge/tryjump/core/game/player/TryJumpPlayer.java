@@ -13,13 +13,11 @@ public class TryJumpPlayer {
 
     @Getter
     private final String language;
-
+    @Getter
+    private final UUID uniqueId;
     @Getter
     @Setter
     private int team;
-
-    @Getter
-    private final UUID uniqueId;
     @Getter
     private Location spawnLocation;
 
@@ -32,6 +30,12 @@ public class TryJumpPlayer {
     @Getter
     private int moduleId = 1;
     private int unitDeaths = 0;
+
+    @Getter
+    @Setter
+
+    private boolean skipped = false;
+
     private Direction facingDirection;
 
     public TryJumpPlayer(String language, UUID uuid, Location spawnLocation) {

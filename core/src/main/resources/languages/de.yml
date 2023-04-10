@@ -12,3 +12,8 @@ GAME_ACTIONBAR: "&6&l>> &a&lUnit {UNIT}: &e&l{UNITNAME} &6&l: &a&l{DIFFICULTY} &
 GAME_COINS_ADD: "&6>> &eTryJump &6: &7Du hast &bUnit {UNITID} &7geschafft! Du erhältst §a{tokens} Tokens&7."
 
 ITEM_INSTANT_DEATH: "&c&lInstant-Tod(TM) &7&o<Rechtsklick>"
+
+LOBBY_SHOP_SKIP: "&6>> &eTryJump &6: &7Der Spieler &6{PLAYER} hat mit &b/skip &7dafür gestimmmt, die Warezeit zu verkürzen &b({PLAYER_PRO}/{MAX_PLAYERS})&7!"
+LOBBY_SHOP_SKIPPED_ALREADY: "&6>> &eTryJump &6: &7Du hast bereits für die Verkürzung der Wartezeit gestimmt!"
+LOBBY_SHOP_SKIPPED: "&6>> &eTryJump &6: &7Die Warezeit würde auf &b5 Sekunden &7verkürzt!"
+

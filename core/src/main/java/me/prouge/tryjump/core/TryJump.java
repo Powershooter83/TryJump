@@ -1,5 +1,6 @@
 package me.prouge.tryjump.core;
 
+import me.prouge.tryjump.core.commands.SkipCMD;
 import me.prouge.tryjump.core.commands.TestCMD;
 import me.prouge.tryjump.core.inject.InjectionModule;
 import me.prouge.tryjump.core.listener.Enchanting;
@@ -20,6 +21,9 @@ public class TryJump extends JavaPlugin {
     private PlayerListener playerListener;
     @Inject
     private ShopHandler shopHandler;
+
+    @Inject
+    private SkipCMD skipCMD;
 
     @Inject
     private Enchanting enchanting;
@@ -61,6 +65,7 @@ public class TryJump extends JavaPlugin {
 
     private void registerCommands() {
         getCommand("shop").setExecutor(testCMD);
+        getCommand("skip").setExecutor(skipCMD);
     }
 
 
