@@ -1,7 +1,7 @@
-package me.prouge.tryjump.core.util;
+package me.prouge.tryjump.core.utils;
 
 import me.prouge.tryjump.core.TryJump;
-import me.prouge.tryjump.core.managers.TryPlayer;
+import me.prouge.tryjump.core.game.player.TryJumpPlayer;
 import net.minecraft.server.v1_8_R3.ChatComponentText;
 import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -18,24 +18,24 @@ public class ChatWriter {
     private TryJump plugin;
     private final HashMap<String, FileConfiguration> languages = new HashMap<>();
 
-    public void print(TryPlayer p, Message msg, String[][] values) {
+    public void print(TryJumpPlayer p, Message msg, String[][] values) {
         if (this.languages.isEmpty()) {
             loadLanguages();
         }
 
-        p.toPlayer().sendMessage(getFinishedMessage(p, msg,values));
+        p.getPlayer().sendMessage(getFinishedMessage(p, msg,values));
     }
-    public void sendActionbar(TryPlayer p, Message msg, String[][] values){
+    public void sendActionbar(TryJumpPlayer p, Message msg, String[][] values){
         if (this.languages.isEmpty()) {
             loadLanguages();
         }
 
         PacketPlayOutChat packet = new PacketPlayOutChat(new ChatComponentText(getFinishedMessage(p,msg,values)), (byte) 2);
-        ((CraftPlayer) p.toPlayer()).getHandle().playerConnection.sendPacket(packet);
+        ((CraftPlayer) p.getPlayer()).getHandle().playerConnection.sendPacket(packet);
     }
 
-    private String getFinishedMessage(TryPlayer p, Message msg, String[][] values){
-        String message = (String) this.languages.get(p.language()).get(msg.toString());
+    private String getFinishedMessage(TryJumpPlayer p, Message msg, String[][] values){
+        String message = (String) this.languages.get(p.getLanguage()).get(msg.toString());
         if (values != null) {
             for (String[] value : values) {
                 message = message.replace("{" + value[0] + "}", value[1]);

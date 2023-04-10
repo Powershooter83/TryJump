@@ -1,4 +1,4 @@
-package me.prouge.tryjump.core.util;
+package me.prouge.tryjump.core.utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;

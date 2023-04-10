@@ -1,7 +1,7 @@
 package me.prouge.tryjump.core.listener;
 
-import me.prouge.tryjump.core.managers.GameManager;
-import me.prouge.tryjump.core.managers.Phase;
+import me.prouge.tryjump.core.game.GameImpl;
+import me.prouge.tryjump.core.game.Phase;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,7 +18,7 @@ import javax.inject.Inject;
 public class WorldSecurityListener implements Listener {
 
     @Inject
-    private GameManager gameManager;
+    private GameImpl gameManager;
 
     @EventHandler
     public void onBlockBreakEvent(BlockBreakEvent e) {

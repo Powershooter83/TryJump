@@ -1,4 +1,4 @@
-package me.prouge.tryjump.core.util;
+package me.prouge.tryjump.core.utils;
 
 public enum Message {
     PLAYER_JOIN_MESSAGE,

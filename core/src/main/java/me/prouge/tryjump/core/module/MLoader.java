@@ -3,14 +3,22 @@ package me.prouge.tryjump.core.module;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
+import lombok.Getter;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class MLoader {
+
+
+    public MLoader() {
+        this.loadModules();
+    }
+
+    @Getter
+    private Map<MDifficulty, List<Module>> modules = new HashMap<>();
 
     @SuppressWarnings("UnstableApiUsage")
     private Module loadModule(String name, String difficulty) throws IOException {
@@ -31,49 +39,47 @@ public class MLoader {
     }
 
 
-    public HashMap<MDifficulty, ArrayList<Module>> getAllModules() {
-        HashMap<MDifficulty, ArrayList<Module>> modules = new HashMap<>();
-        File easy = new File("plugins" + File.separator + "TryJump-Modules" + File.separator + "easy");
-        File medium = new File("plugins" + File.separator + "TryJump-Modules" + File.separator + "medium");
-        File hard = new File("plugins" + File.separator + "TryJump-Modules" + File.separator + "hard");
-        File extreme = new File("plugins" + File.separator + "TryJump-Modules" + File.separator + "extreme");
+    private Map<MDifficulty, List<Module>> getAllModules() {
+        final String MODULES_PATH = "plugins/TryJump-Modules/";
 
-        for (String name : Objects.requireNonNull(easy.list())) {
-            try {
-                modules.computeIfAbsent(MDifficulty.EASY, k -> new ArrayList<>());
-                modules.get(MDifficulty.EASY).add(loadModule(name, "easy"));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        File[] difficultyDirs = {
+                new File(MODULES_PATH + "easy"),
+                new File(MODULES_PATH + "medium"),
+                new File(MODULES_PATH + "hard"),
+                new File(MODULES_PATH + "extreme")
+        };
 
-        for (String name : Objects.requireNonNull(medium.list())) {
-            try {
-                modules.computeIfAbsent(MDifficulty.MEDIUM, k -> new ArrayList<>());
-                modules.get(MDifficulty.MEDIUM).add(loadModule(name, "medium"));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        for (String name : Objects.requireNonNull(hard.list())) {
-            try {
-                modules.computeIfAbsent(MDifficulty.HARD, k -> new ArrayList<>());
-                modules.get(MDifficulty.HARD).add(loadModule(name, "hard"));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        Map<MDifficulty, List<Module>> modules = new HashMap<>();
 
-        for (String name : Objects.requireNonNull(extreme.list())) {
-            try {
-                modules.computeIfAbsent(MDifficulty.EXTREME, k -> new ArrayList<>());
-                modules.get(MDifficulty.EXTREME).add(loadModule(name, "extreme"));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        Arrays.stream(difficultyDirs)
+                .forEach(difficultyDir -> {
+                    List<Module> moduleList = Arrays.stream(Objects.requireNonNull(difficultyDir.list()))
+                            .map(name -> {
+                                try {
+                                    return loadModule(name, difficultyDir.getName());
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            })
+                            .collect(Collectors.toList());
+                    modules.put(MDifficulty.valueOf(difficultyDir.getName().toUpperCase()), moduleList);
+                });
         return modules;
+    }
 
+
+    private void loadModules() {
+        Map<MDifficulty, List<Module>> allModules = getAllModules();
+        Map<MDifficulty, List<Module>> modules = new HashMap<>();
+
+        allModules.forEach((difficulty, moduleList) -> Collections.shuffle(moduleList));
+
+        modules.put(MDifficulty.EASY, allModules.get(MDifficulty.EASY).subList(0, 3));
+        modules.put(MDifficulty.MEDIUM, allModules.get(MDifficulty.MEDIUM).subList(0, 3));
+        modules.put(MDifficulty.HARD, allModules.get(MDifficulty.HARD).subList(0, 3));
+        modules.put(MDifficulty.EXTREME, Collections.singletonList(allModules.get(MDifficulty.EXTREME).get(0)));
+
+        this.modules = modules;
     }
 
 
