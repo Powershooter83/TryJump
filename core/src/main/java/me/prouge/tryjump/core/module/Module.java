@@ -3,6 +3,7 @@ package me.prouge.tryjump.core.module;
 import org.bukkit.Location;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Module {
@@ -90,6 +91,32 @@ public class Module {
         });
 
     }
+
+    public int getMaxLength() {
+        int maxLength = 0;
+        switch(facing) {
+            case "N":
+                moduleBlockList.sort(Comparator.comparingInt(MBlock::getPositionZ));
+                maxLength = moduleBlockList.get(moduleBlockList.size() - 1).getPositionZ() - moduleBlockList.get(0).getPositionZ();
+                break;
+            case "W":
+                moduleBlockList.sort(Comparator.comparingInt(MBlock::getPositionX));
+                maxLength = moduleBlockList.get(0).getPositionX() - moduleBlockList.get(moduleBlockList.size() - 1).getPositionX();
+                break;
+            case "E":
+                moduleBlockList.sort(Comparator.comparingInt(MBlock::getPositionX));
+                maxLength = moduleBlockList.get(moduleBlockList.size() - 1).getPositionX() - moduleBlockList.get(0).getPositionX();
+                break;
+            case "S":
+                moduleBlockList.sort(Comparator.comparingInt(MBlock::getPositionZ));
+                maxLength = moduleBlockList.get(0).getPositionZ() - moduleBlockList.get(moduleBlockList.size() - 1).getPositionZ();
+                break;
+        }
+        return maxLength;
+    }
+
+
+
 
 
     public String getName() {

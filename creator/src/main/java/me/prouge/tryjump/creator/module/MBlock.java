@@ -1,6 +1,7 @@
 package me.prouge.tryjump.creator.module;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 

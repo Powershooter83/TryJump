@@ -1,4 +1,4 @@
-package me.prouge.tryjump.core.managers;
+package me.prouge.tryjump.core.game;
 
 public enum Phase {
 
@@ -6,6 +6,7 @@ public enum Phase {
     Lobby_with_countdown,
     Game_starting,
     Game_running,
+    Game_shop,
     Game_pvp,
     Game_end
 }

@@ -4,5 +4,4 @@ version: ${project.version}
 description: ${project.description}
 main: me.prouge.tryjump.core.TryJump
 commands:
-  test:
-    aliases: t
+  shop:

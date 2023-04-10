@@ -1,7 +1,7 @@
 package me.prouge.tryjump.core.listener;
 
-import me.prouge.tryjump.core.managers.GameManager;
-import me.prouge.tryjump.core.managers.Phase;
+import me.prouge.tryjump.core.game.GameImpl;
+import me.prouge.tryjump.core.game.Phase;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,7 +18,7 @@ import javax.inject.Inject;
 public class WorldSecurityListener implements Listener {
 
     @Inject
-    private GameManager gameManager;
+    private GameImpl gameManager;
 
     @EventHandler
     public void onBlockBreakEvent(BlockBreakEvent e) {
@@ -53,16 +53,16 @@ public class WorldSecurityListener implements Listener {
     }
 
     @EventHandler
-    public void onItemDrop(PlayerDropItemEvent event) {
+    public void onItemDrop(PlayerDropItemEvent e) {
         if (!gameManager.getGamePhase().equals(Phase.Game_pvp)) {
-            event.setCancelled(true);
+            e.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
+    public void onInventoryClick(InventoryClickEvent e) {
         if (!gameManager.getGamePhase().equals(Phase.Game_pvp)) {
-            event.setCancelled(true);
+            e.setCancelled(true);
         }
     }
 

@@ -1,4 +1,4 @@
-package me.prouge.tryjump.core.util;
+package me.prouge.tryjump.core.utils;
 
 import me.prouge.tryjump.core.TryJump;
 import org.apache.commons.io.FileUtils;
