@@ -10,6 +10,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>creator</artifactId>
+
+    <properties>
+        <output.directory>C:/Users/Yanick/Desktop/spigot_server/plugins</output.directory>
+    </properties>
+
     <description>
         This plugin is used to create TryJump modules! It will be deleted automatically if a round is started.
     </description>

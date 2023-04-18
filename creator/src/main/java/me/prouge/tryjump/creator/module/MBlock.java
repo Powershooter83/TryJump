@@ -1,131 +1,129 @@
 package me.prouge.tryjump.creator.module;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.banner.Pattern;
+import org.bukkit.material.MaterialData;
 
+import java.util.List;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class MBlock {
 
-    @JsonProperty("positionX")
+    @JsonProperty("X")
     private int positionX;
-    @JsonProperty("positionY")
+
+    @JsonProperty("Y")
     private int positionY;
-    @JsonProperty("positionZ")
+
+    @JsonProperty("Z")
     private int positionZ;
-    @JsonProperty("data")
+
+    @JsonProperty
+    private Material material;
+
+    @JsonProperty
     private byte data;
-    @JsonProperty("type")
-    private Material type;
 
-    public MBlock() {
-    }
+    @JsonProperty(required = false)
+    private String playerName;
 
-    public MBlock(int positionX, int positionY, int positionZ, byte data, Material type) {
+    @JsonProperty(required = false)
+    private BlockFace blockFace;
+
+    @JsonProperty(required = false)
+    private DyeColor baseColor;
+
+    @JsonProperty(required = false)
+    private List<Pattern> patterns;
+
+    @JsonProperty(required = false)
+    private String[] lines;
+
+    @JsonProperty(required = false)
+    private MaterialData flowerPotContent;
+
+    public MBlock(int positionX, int positionY, int positionZ, MaterialData data) {
         this.positionX = positionX;
         this.positionY = positionY;
         this.positionZ = positionZ;
-        this.data = data;
-        this.type = type;
+        this.material = data.getItemType();
+        this.data = data.getData();
     }
 
+    public MBlock(int positionX, int positionY, int positionZ, MaterialData data,
+                  MaterialData flowerPotContent) {
+        this.positionX = positionX;
+        this.positionY = positionY;
+        this.positionZ = positionZ;
+        this.material = data.getItemType();
+        this.data = data.getData();
+        this.flowerPotContent = flowerPotContent;
+    }
+
+    public MBlock(int positionX, int positionY, int positionZ, MaterialData data, String[] lines) {
+        this.positionX = positionX;
+        this.positionY = positionY;
+        this.positionZ = positionZ;
+        this.material = data.getItemType();
+        this.data = data.getData();
+        this.lines = lines;
+    }
+
+    public MBlock(int positionX, int positionY, int positionZ, MaterialData data, DyeColor baseColor,
+                  List<Pattern> patterns) {
+        this.positionX = positionX;
+        this.positionY = positionY;
+        this.positionZ = positionZ;
+        this.material = data.getItemType();
+        this.data = data.getData();
+        this.baseColor = baseColor;
+        this.patterns = patterns;
+    }
+
+    public MBlock(int positionX, int positionY, int positionZ, MaterialData data, String playerName,
+                  BlockFace blockFace) {
+        this.positionX = positionX;
+        this.positionY = positionY;
+        this.positionZ = positionZ;
+        this.material = data.getItemType();
+        this.data = data.getData();
+        this.playerName = playerName;
+        this.blockFace = blockFace;
+    }
+
+
     public Location getRelativeLocation(Location playerPosition) {
-        int relativeX = 0;
-        int relativeY = 0;
-        int relativeZ = 0;
-
-        if (playerPosition.getBlockX() < positionX && playerPosition.getBlockX() > 0) {
-            relativeX = positionX - playerPosition.getBlockX();
-        }
-        if (playerPosition.getBlockX() < positionX && playerPosition.getBlockX() < 0) {
-            relativeX = positionX + playerPosition.getBlockX();
-        }
-        if (playerPosition.getBlockX() > positionX && positionX > 0) {
-            relativeX = -(playerPosition.getBlockX() - positionX);
-        }
-        if (playerPosition.getBlockX() > positionX && positionX < 0) {
-            relativeX = playerPosition.getBlockX() + positionX;
-        }
-
-        if (playerPosition.getBlockY() < positionY && playerPosition.getBlockY() > 0) {
-            relativeY = positionY - playerPosition.getBlockY();
-        }
-        if (playerPosition.getBlockY() < positionY && playerPosition.getBlockY() < 0) {
-            relativeY = positionY + playerPosition.getBlockY();
-        }
-        if (playerPosition.getBlockY() > positionY && positionY > 0) {
-            relativeY = -(playerPosition.getBlockY() - positionY);
-        }
-        if (playerPosition.getBlockY() > positionY && positionY < 0) {
-            relativeY = playerPosition.getBlockY() + positionY;
-        }
-
-        if (playerPosition.getBlockZ() < positionZ && playerPosition.getBlockZ() > 0) {
-            relativeZ = positionZ - playerPosition.getBlockZ();
-        }
-        if (playerPosition.getBlockZ() < positionZ && playerPosition.getBlockZ() < 0) {
-            relativeZ = positionZ + playerPosition.getBlockZ();
-        }
-        if (playerPosition.getBlockZ() > positionZ && positionZ > 0) {
-            relativeZ = -(playerPosition.getBlockZ() - positionZ);
-        }
-        if (playerPosition.getBlockZ() > positionZ && positionZ < 0) {
-            relativeZ = playerPosition.getBlockZ() + positionZ;
-        }
+        int relativeX = positionX - playerPosition.getBlockX();
+        int relativeY = positionY - playerPosition.getBlockY();
+        int relativeZ = positionZ - playerPosition.getBlockZ();
         return new Location(playerPosition.getWorld(), relativeX, relativeY, relativeZ);
     }
 
-
-    @Override
-    public String toString() {
-        return "MBlock{" +
-                "positionX=" + positionX +
-                ", positionY=" + positionY +
-                ", positionZ=" + positionZ +
-                ", data=" + data +
-                ", type=" + type +
-                '}';
+    public void rotateBlock(int x, int z) {
+        this.positionX = x;
+        this.positionZ = z;
     }
 
-    public int getPositionX() {
-        return positionX;
-    }
+    public boolean isNeighbor(MBlock otherBlock) {
+        int dx = Math.abs(this.positionX - otherBlock.positionX);
+        int dy = Math.abs(this.positionY - otherBlock.positionY);
+        int dz = Math.abs(this.positionZ - otherBlock.positionZ);
 
-    public void setPositionX(int positionX) {
-        this.positionX = positionX;
+        // Prüfen, ob die Differenz der Koordinaten genau 1 beträgt
+        return (dx == 1 && dy == 0 && dz == 0) ||
+                (dx == 0 && dy == 1 && dz == 0) ||
+                (dx == 0 && dy == 0 && dz == 1);
     }
-
-    public int getPositionY() {
-        return positionY;
-    }
-
-    public void setPositionY(int positionY) {
-        this.positionY = positionY;
-    }
-
-    public int getPositionZ() {
-        return positionZ;
-    }
-
-    public void setPositionZ(int positionZ) {
-        this.positionZ = positionZ;
-    }
-
-    public byte getData() {
-        return data;
-    }
-
-    public void setData(byte data) {
-        this.data = data;
-    }
-
-    public Material getType() {
-        return type;
-    }
-
-    public void setType(Material type) {
-        this.type = type;
-    }
-
 
 }

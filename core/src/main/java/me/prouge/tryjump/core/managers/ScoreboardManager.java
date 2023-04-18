@@ -1,5 +1,8 @@
 package me.prouge.tryjump.core.managers;
 
+import com.google.inject.Singleton;
+import lombok.Getter;
+import lombok.Setter;
 import me.prouge.tryjump.core.game.player.TryJumpPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -10,8 +13,11 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+@Singleton
 public class ScoreboardManager {
 
+    @Setter
+    @Getter
     LocalTime time = LocalTime.of(0, 10, 0);
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("mm:ss");
 
@@ -19,13 +25,14 @@ public class ScoreboardManager {
 
 
     public void createScoreboard(final ArrayList<TryJumpPlayer> playerArrayList, final int mapLength) {
+        this.time = LocalTime.of(0, 10, 0);
         org.bukkit.scoreboard.Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
         Objective objective = scoreboard.registerNewObjective("stats", "dummy");
         objective.setDisplayName("§6§lTryJump§7§l-§6§lMC");
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         Team time = scoreboard.registerNewTeam("time");
         time.setPrefix("§8● ");
-        time.setSuffix("§b05:30");
+        time.setSuffix("§b" + this.time.format(formatter));
         time.addEntry("§a");
 
         objective.getScore("§e").setScore(playerArrayList.size() + 3);
@@ -46,6 +53,109 @@ public class ScoreboardManager {
 
         this.objective = objective;
     }
+
+    public void createLobbyScoreboard(final ArrayList<TryJumpPlayer> playerArrayList) {
+        time = LocalTime.of(0, 2, 0);
+
+        playerArrayList.forEach(tp -> {
+            org.bukkit.scoreboard.Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+            Objective objective = scoreboard.registerNewObjective("stats", "dummy");
+            objective.setDisplayName("§6§lTryJump§7§l-§6§lMC");
+            objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+            Team time = scoreboard.registerNewTeam("time");
+            time.setPrefix("§8● ");
+            time.setSuffix("§b" + this.time.format(formatter));
+            time.addEntry("§a");
+
+            objective.getScore("§e").setScore(8);
+            objective.getScore("§fVerbleibende Zeit§8: ").setScore(7);
+            objective.getScore("§a").setScore(6);
+            objective.getScore("§7").setScore(5);
+            objective.getScore("§fCoins§8: ").setScore(4);
+            objective.getScore("§b").setScore(3);
+            objective.getScore("§c").setScore(2);
+            objective.getScore("§8§m---------------------").setScore(1);
+            objective.getScore("§8● §aTeams erlaubt").setScore(0);
+
+            Team coins = scoreboard.registerNewTeam(tp.getPlayer().getName());
+            coins.setPrefix("§8● ");
+            coins.addEntry("§b");
+            coins.setSuffix(String.valueOf(tp.getTokens()));
+            tp.getPlayer().setScoreboard(scoreboard);
+        });
+
+    }
+
+    public void createDeathMatchScoreboard(final ArrayList<TryJumpPlayer> playerArrayList) {
+        time = LocalTime.of(0, 10, 0);
+        playerArrayList.forEach(tp -> {
+            org.bukkit.scoreboard.Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+            Objective objective = scoreboard.registerNewObjective("stats", "dummy");
+            objective.setDisplayName("§6§lTryJump§7§l-§6§lMC");
+            objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+
+            Team time = scoreboard.registerNewTeam("time");
+            time.setPrefix("§8● ");
+            time.setSuffix("§b" + this.time.format(formatter));
+            time.addEntry("§b");
+
+            Team players = scoreboard.registerNewTeam("players");
+            players.setPrefix("§8● ");
+            players.addEntry("§e");
+            players.setSuffix(String.valueOf(playerArrayList.size()));
+
+            Team lives = scoreboard.registerNewTeam(tp.getPlayer().getName());
+            lives.setPrefix("§8● ");
+            lives.addEntry("§c");
+            lives.setSuffix("3");
+
+            objective.getScore("§e").setScore(11);
+            objective.getScore("§fVerbleibende Zeit§8: ").setScore(10);
+            objective.getScore("§b").setScore(9);
+            objective.getScore("§7").setScore(8);
+            objective.getScore("§fSpieler§8:").setScore(7);
+            objective.getScore("§e").setScore(6);
+            objective.getScore("§6").setScore(5);
+            objective.getScore("§fLeben§8:").setScore(4);
+            objective.getScore("§c").setScore(3);
+            objective.getScore("§8").setScore(2);
+            objective.getScore("§8§m---------------------").setScore(1);
+            objective.getScore("§8● §aTeams erlaubt").setScore(0);
+
+            tp.getPlayer().setScoreboard(scoreboard);
+
+        });
+    }
+
+    public void updateDeathMatchScoreboard(final ArrayList<TryJumpPlayer> playerArrayList) {
+
+        time = time.minusSeconds(1);
+
+        playerArrayList.forEach(tp -> {
+            Team timeTeam = tp.getPlayer().getScoreboard().getTeam("time");
+
+            Team lives = tp.getPlayer().getScoreboard().getTeam(tp.getPlayer().getName());
+            lives.setSuffix(String.valueOf(3 - tp.getDeathMatchDeaths()));
+
+            Team players = tp.getPlayer().getScoreboard().getTeam("players");
+            players.setSuffix(String.valueOf(playerArrayList.stream().filter(tpt -> tpt.getDeathMatchDeaths() < 3).count()));
+
+            timeTeam.setSuffix("§b" + time.format(formatter));
+        });
+
+    }
+
+
+    public void updateLobbyScoreboard(final ArrayList<TryJumpPlayer> playerArrayList) {
+        time = time.minusSeconds(1);
+
+        playerArrayList.forEach(tp -> {
+            Team timeTeam = tp.getPlayer().getScoreboard().getTeam("time");
+            timeTeam.setSuffix("§b" + time.format(formatter));
+        });
+
+    }
+
 
     public void updateScoreboard(final ArrayList<TryJumpPlayer> playerArrayList, final int mapLength) {
 
@@ -69,5 +179,6 @@ public class ScoreboardManager {
     private int calculateScore(TryJumpPlayer tp, final int mapLength) {
         return (int) ((tp.getWalkedDistance() / mapLength) * 100);
     }
+
 
 }

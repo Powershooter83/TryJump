@@ -1,2 +1,3 @@
 maxPlayers: 10
 minPlayers: 2
+lobbyDuration: 60

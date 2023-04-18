@@ -1,10 +1,17 @@
 package me.prouge.tryjump.creator.module;
 
 //import com.fasterxml.jackson.databind.ObjectMapper;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import me.prouge.tryjump.creator.TryJump;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.SkullType;
+import org.bukkit.block.Banner;
 import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
+import org.bukkit.block.Skull;
+import org.bukkit.material.FlowerPot;
 
 import javax.inject.Inject;
 import java.io.File;
@@ -38,13 +45,47 @@ public class MSaver {
                 for (int z = minZ; z <= maxZ; z++) {
                     Block selected = position1.getWorld().getBlockAt(x, y, z);
                     if (selected.getType() != Material.AIR) {
-                        blockList.add(new MBlock(x, y, z, selected.getData(), selected.getType()));
+                        if (selected.getType() == Material.SKULL) {
+                            Skull skull = (Skull) selected.getState();
+                            if (skull.getSkullType() == SkullType.PLAYER) {
+                                blockList.add(new MBlock(x, y, z, selected.getState().getData(), skull.getOwner(), skull.getRotation()));
+                                continue;
+                            }
+                        }
+                        if (selected.getType() == Material.STANDING_BANNER || selected.getType() == Material.WALL_BANNER) {
+                            Banner banner = (Banner) selected.getState();
+                            blockList.add(new MBlock(x, y, z, selected.getState().getData(),
+                                    banner.getBaseColor(),
+                                    banner.getPatterns()));
+                            continue;
+                        }
+
+                        if (selected.getType() == Material.SIGN_POST || selected.getType() == Material.WALL_SIGN) {
+                            Sign sign = (Sign) selected.getState();
+                            blockList.add(new MBlock(x, y, z, selected.getState().getData(),
+                                    sign.getLines()));
+                            continue;
+                        }
+
+//                        if (selected.getType() == Material.FLOWER_POT) {
+//                            System.out.println(position1.getWorld().getBlockAt(x, (int) (y + 1), z));
+//
+//                            FlowerPot flowerpot = (FlowerPot) selected.getState().getData();
+//                            System.out.println(flowerpot);
+//                            blockList.add(new MBlock(x, y, z, selected.getState().getData(),
+//                                    flowerpot.getContents()));
+//                            continue;
+//                        }
+
+
+                        blockList.add(new MBlock(x, y, z, selected.getState().getData()));
                     }
                 }
             }
         }
         blockList.forEach(block -> {
             Location relative = block.getRelativeLocation(playerLocation);
+
             block.setPositionX(relative.getBlockX());
             block.setPositionY(relative.getBlockY());
             block.setPositionZ(relative.getBlockZ());
@@ -71,8 +112,8 @@ public class MSaver {
 
         final FileWriter writer = new FileWriter(file);
 
-        writer.write(getDirection(playerLocation) + ";" + name + ";" + difficulty + "01001023010000140141024023415433543");
-     //   writer.write(new ObjectMapper().writeValueAsString(blockList));
+        writer.write(getDirection(playerLocation) + ";" + name + ";" + difficulty + "000000000000000000");
+        writer.write(new ObjectMapper().writeValueAsString(blockList));
         writer.flush();
         writer.close();
     }

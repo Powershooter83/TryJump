@@ -3,9 +3,12 @@ package me.prouge.tryjump.core.listener;
 import me.prouge.tryjump.core.game.GameImpl;
 import me.prouge.tryjump.core.game.Phase;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
@@ -30,6 +33,12 @@ public class WorldSecurityListener implements Listener {
         if (!gameManager.getGamePhase().equals(Phase.Game_pvp) && e.getBlock().getType() != Material.TNT) {
             e.setCancelled(true);
         }
+        if (gameManager.getGamePhase().equals(Phase.Game_pvp) && e.getBlock().getType() == Material.TNT) {
+            Block block = e.getBlock();
+            block.getWorld().spawn(block.getLocation(), TNTPrimed.class);
+            block.setType(Material.AIR);
+        }
+
     }
 
     @EventHandler
@@ -61,10 +70,13 @@ public class WorldSecurityListener implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
-        if (!gameManager.getGamePhase().equals(Phase.Game_pvp)) {
+        if (!gameManager.getGamePhase().equals(Phase.Game_pvp) && !gameManager.getGamePhase().equals(Phase.Game_shop)) {
             e.setCancelled(true);
         }
     }
 
-
+    @EventHandler
+    public void onBlockExplodeEvent(BlockExplodeEvent e) {
+        e.setCancelled(true);
+    }
 }

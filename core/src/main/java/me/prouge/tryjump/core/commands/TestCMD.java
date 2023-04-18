@@ -20,7 +20,7 @@ public class TestCMD implements CommandExecutor {
     public boolean onCommand(final CommandSender commandSender, final Command command, final String s, final String[] args) {
         Player player = (Player) commandSender;
 
-        if(args.length == 0){
+        if (args.length == 0) {
             shop.openShop(player);
             return false;
         }
@@ -29,17 +29,15 @@ public class TestCMD implements CommandExecutor {
         if (args[0].equalsIgnoreCase("setlobby")) {
             plugin.getConfig().set("Lobby", player.getLocation());
             plugin.saveConfig();
-        } else if(args[0].equalsIgnoreCase("setspawn")){
+        } else if (args[0].equalsIgnoreCase("setspawn")) {
             plugin.getConfig().set("Spawns." + args[1], player.getLocation());
             plugin.saveConfig();
             player.sendMessage("Der Spawn " + args[1] + " wurde gesetzt!");
-        } else if(args[0].equalsIgnoreCase("setdm")){
+        } else if (args[0].equalsIgnoreCase("setdm")) {
             plugin.getConfig().set("DeathMatchSpawns." + args[1], player.getLocation());
             plugin.saveConfig();
             player.sendMessage("Der DeathMatch Spawn " + args[1] + " wurde gesetzt!");
         }
-
-
         return false;
     }
 }

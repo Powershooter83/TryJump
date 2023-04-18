@@ -8,11 +8,13 @@ import javax.inject.Inject;
 
 public class TryJump extends JavaPlugin {
 
-    @Inject private ModuleCMD moduleCMD;
+    @Inject
+    private ModuleCMD moduleCMD;
 
     @Override
     public void onEnable() {
         new InjectionModule(this);
         this.getCommand("module").setExecutor(moduleCMD);
     }
+
 }
