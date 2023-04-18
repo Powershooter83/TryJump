@@ -22,7 +22,21 @@ public class TryJumpPlayer {
     private Location spawnLocation;
 
     @Getter
+    @Setter
     private float walkedDistance = 0;
+
+    @Getter
+    @Setter
+    private boolean nextSwordPrice = false;
+
+    @Getter
+    @Setter
+    private boolean nextFishingRodPrice = false;
+
+    @Getter
+    @Setter
+    private boolean nextBowPrice = false;
+
 
     @Getter
     @Setter
@@ -32,8 +46,22 @@ public class TryJumpPlayer {
     private int unitDeaths = 0;
 
     @Getter
-    @Setter
+    private int totalUnitDeaths = 0;
 
+    @Getter
+    @Setter
+    private byte deathMatchDeaths = 0;
+
+    @Getter
+    @Setter
+    private float walkedDistanceUntilDeath = 0;
+
+    @Getter
+    @Setter
+    private long timeStamp = 0;
+
+    @Getter
+    @Setter
     private boolean skipped = false;
 
     private Direction facingDirection;
@@ -75,6 +103,7 @@ public class TryJumpPlayer {
     }
 
     public void resetUnitDeaths() {
+        this.totalUnitDeaths += this.unitDeaths;
         this.unitDeaths = 0;
     }
 
@@ -86,6 +115,5 @@ public class TryJumpPlayer {
     public void updateWalkedDistance(final double length) {
         this.walkedDistance += length;
     }
-
 
 }

@@ -2,23 +2,33 @@ package me.prouge.tryjump.core.module;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.google.common.base.Charsets;
+import com.google.inject.Singleton;
 import lombok.Getter;
+import me.prouge.tryjump.core.utils.PatternDeserializer;
+import org.bukkit.block.banner.Pattern;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Singleton
 public class MLoader {
 
 
-    public MLoader() {
-        this.loadModules();
-    }
-
     @Getter
     private Map<MDifficulty, List<Module>> modules = new HashMap<>();
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    SimpleModule simpleModule = new SimpleModule();
+
+    public MLoader() {
+        simpleModule.addDeserializer(Pattern.class, new PatternDeserializer());
+        objectMapper.registerModule(simpleModule);
+        this.loadModules();
+    }
 
     @SuppressWarnings("UnstableApiUsage")
     private Module loadModule(String name, String difficulty) throws IOException {
@@ -29,12 +39,14 @@ public class MLoader {
                 difficulty + File.separator +
                 name);
         String content = com.google.common.io.Files.asCharSource(module, Charsets.UTF_8).read();
-        String[] contentSplit = content.split("01001023010000140141024023415433543");
+        String[] contentSplit = content.split("000000000000000000");
         String[] splitInformation = contentSplit[0].split(";");
+
+
         return new Module(splitInformation[1],
                 splitInformation[0],
                 Enum.valueOf(MDifficulty.class, splitInformation[2].toUpperCase()),
-                new ObjectMapper().readValue(contentSplit[1], new TypeReference<List<MBlock>>() {
+                objectMapper.readValue(contentSplit[1], new TypeReference<List<MBlock>>() {
                 }));
     }
 

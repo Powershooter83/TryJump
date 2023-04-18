@@ -1,8 +1,10 @@
-package me.prouge.tryjump.core.events;
+package me.prouge.tryjump.core.listener;
 
 import me.prouge.tryjump.core.game.GameImpl;
 import me.prouge.tryjump.core.game.player.TryJumpPlayer;
 import me.prouge.tryjump.core.shop.Shop;
+import me.prouge.tryjump.core.utils.ChatWriter;
+import me.prouge.tryjump.core.utils.Message;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,10 +14,13 @@ import org.bukkit.scoreboard.Scoreboard;
 
 import javax.inject.Inject;
 
-public class ShopHandler implements Listener {
+public class ShopListener implements Listener {
 
     @Inject
     private Shop shop;
+
+    @Inject
+    private ChatWriter chatWriter;
 
     @Inject
     private GameImpl gameImpl;
@@ -26,6 +31,7 @@ public class ShopHandler implements Listener {
                 e.getClick().isKeyboardClick()) {
             return;
         }
+        e.setCancelled(true);
 
         switch (e.getRawSlot()) {
             case 0:
@@ -50,6 +56,10 @@ public class ShopHandler implements Listener {
                 shop.openSpecial(e.getClickedInventory());
                 break;
             default:
+                if(e.getCurrentItem() == null || e.getCurrentItem().getType() == Material.AIR){
+                    return;
+                }
+
                 Player player = (Player) e.getWhoClicked();
                 TryJumpPlayer tryPlayer = gameImpl.getTryPlayer(player);
 
@@ -65,6 +75,8 @@ public class ShopHandler implements Listener {
                         return;
                     }
                     player.getInventory().addItem(e.getCurrentItem());
+                } else {
+                    chatWriter.print(tryPlayer, Message.LOBBY_SHOP_MONEY, null);
                 }
         }
     }

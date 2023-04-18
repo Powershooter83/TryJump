@@ -1,4 +1,4 @@
-package me.prouge.tryjump.core.module;
+package me.prouge.tryjump.creator.module;
 
 import org.bukkit.Location;
 import org.bukkit.SkullType;

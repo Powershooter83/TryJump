@@ -1,31 +1,44 @@
 package me.prouge.tryjump.core.shop;
 
+import me.prouge.tryjump.core.game.GameImpl;
+import me.prouge.tryjump.core.game.player.TryJumpPlayer;
+import me.prouge.tryjump.core.utils.ChatWriter;
 import me.prouge.tryjump.core.utils.ItemBuilder;
+import me.prouge.tryjump.core.utils.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import javax.inject.Inject;
+
 
 public class Shop {
 
+    @Inject
+    private ChatWriter chatWriter;
+
+    @Inject
+    private GameImpl game;
+
+
     public void openShop(final Player player) {
         final Inventory inventory = Bukkit.createInventory(null, 27, "§6>> §eTryJump Shop");
-        initializeCategories(inventory);
+        initializeCategories(inventory, game.getTryPlayer(player));
 
         player.openInventory(inventory);
     }
 
 
-    private void initializeCategories(final Inventory inventory) {
-        inventory.setItem(0, new ItemBuilder(Material.GOLD_SWORD).setName("§bWaffen").toItemStack());
-        inventory.setItem(1, new ItemBuilder(Material.LEATHER_CHESTPLATE).setName("§bLeder Rüstung").toItemStack());
-        inventory.setItem(2, new ItemBuilder(Material.CHAINMAIL_HELMET).setName("§bKetten Rüstung").toItemStack());
-        inventory.setItem(3, new ItemBuilder(Material.IRON_CHESTPLATE).setName("§bEisen Rüstung").toItemStack());
-        inventory.setItem(5, new ItemBuilder(Material.CAKE).setName("§bNahrung").toItemStack());
-        inventory.setItem(6, new ItemBuilder(Material.POTION).setName("§bTränke").toItemStack());
-        inventory.setItem(8, new ItemBuilder(Material.NETHER_STAR).setName("§bSpezial").toItemStack());
+    private void initializeCategories(final Inventory inventory, TryJumpPlayer tp) {
+        inventory.setItem(0, new ItemBuilder(Material.GOLD_SWORD).setName(chatWriter.getItemStackName(tp, Message.SHOP_CATEGORY_WEAPONS)).toItemStack());
+        inventory.setItem(1, new ItemBuilder(Material.LEATHER_CHESTPLATE).setName(chatWriter.getItemStackName(tp, Message.SHOP_CATEGORY_LEATHER_ARMOR)).toItemStack());
+        inventory.setItem(2, new ItemBuilder(Material.CHAINMAIL_HELMET).setName(chatWriter.getItemStackName(tp, Message.SHOP_CATEGORY_CHAIN_ARMOR)).toItemStack());
+        inventory.setItem(3, new ItemBuilder(Material.IRON_CHESTPLATE).setName(chatWriter.getItemStackName(tp, Message.SHOP_CATEGORY_IRON_ARMOR)).toItemStack());
+        inventory.setItem(5, new ItemBuilder(Material.CAKE).setName(chatWriter.getItemStackName(tp, Message.SHOP_CATEGORY_FOOD)).toItemStack());
+        inventory.setItem(6, new ItemBuilder(Material.POTION).setName(chatWriter.getItemStackName(tp, Message.SHOP_CATEGORY_POISON)).toItemStack());
+        inventory.setItem(8, new ItemBuilder(Material.NETHER_STAR).setName(chatWriter.getItemStackName(tp, Message.SHOP_CATEGORY_SPECIAL)).toItemStack());
     }
 
 

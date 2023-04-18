@@ -1,5 +1,6 @@
 package me.prouge.tryjump.core.utils;
 
+import com.google.inject.Singleton;
 import me.prouge.tryjump.core.TryJump;
 import me.prouge.tryjump.core.game.player.TryJumpPlayer;
 import net.minecraft.server.v1_8_R3.ChatComponentText;
@@ -13,6 +14,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
+@Singleton
 public class ChatWriter {
 
     private final HashMap<String, FileConfiguration> languages = new HashMap<>();
@@ -35,6 +37,13 @@ public class ChatWriter {
         PacketPlayOutChat packet = new PacketPlayOutChat(new ChatComponentText(getFinishedMessage(p, msg, values)), (byte) 2);
         ((CraftPlayer) p.getPlayer()).getHandle().playerConnection.sendPacket(packet);
     }
+
+
+    public String getItemStackName(TryJumpPlayer tryPlayer, Message msg){
+        String message = (String) this.languages.get(tryPlayer.getLanguage()).get(msg.toString());
+        return message.replace("&", "\u00a7");
+    }
+
 
     private String getFinishedMessage(TryJumpPlayer p, Message msg, String[][] values) {
         String message = (String) this.languages.get(p.getLanguage()).get(msg.toString());
@@ -67,6 +76,8 @@ public class ChatWriter {
 
 
     }
+
+
 
 
 }

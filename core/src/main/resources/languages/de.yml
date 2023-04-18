@@ -8,12 +8,63 @@ SETUP_SPAWN_SET: "&6>> &eTryJump &6: &bDer Spawn {SPAWN} wurde erfolgreich geset
 PLAYER_QUIT_MESSAGE: "&6>> &eTryJump &6: &7Der Spieler &a{PLAYER} &7ist ausgeschieden!"
 GAME_ACTIONBAR: "&6&l>> &a&lUnit {UNIT}: &e&l{UNITNAME} &6&l: &a&l{DIFFICULTY} &6&l<<"
 
-
-GAME_COINS_ADD: "&6>> &eTryJump &6: &7Du hast &bUnit {UNITID} &7geschafft! Du erhältst §a{tokens} Tokens&7."
+# Items
 
 ITEM_INSTANT_DEATH: "&c&lInstant-Tod(TM) &7&o<Rechtsklick>"
 
-LOBBY_SHOP_SKIP: "&6>> &eTryJump &6: &7Der Spieler &6{PLAYER} hat mit &b/skip &7dafür gestimmmt, die Warezeit zu verkürzen &b({PLAYER_PRO}/{MAX_PLAYERS})&7!"
-LOBBY_SHOP_SKIPPED_ALREADY: "&6>> &eTryJump &6: &7Du hast bereits für die Verkürzung der Wartezeit gestimmt!"
-LOBBY_SHOP_SKIPPED: "&6>> &eTryJump &6: &7Die Warezeit würde auf &b5 Sekunden &7verkürzt!"
 
+
+
+
+# Lobby
+
+
+
+
+# Game
+
+
+# Shop
+
+
+
+# Shop - Categories
+
+SHOP_CATEGORY_WEAPONS: "§bWaffen"
+SHOP_CATEGORY_LEATHER_ARMOR: "§bLeder Rüstung"
+SHOP_CATEGORY_CHAIN_ARMOR: "§bKetten Rüstung"
+SHOP_CATEGORY_IRON_ARMOR: "§bEisen Rüstung"
+SHOP_CATEGORY_FOOD: "§bNahrung"
+SHOP_CATEGORY_POISON: "§bTränke"
+SHOP_CATEGORY_SPECIAL: "§bSpezial"
+
+# Deathmatch
+
+
+
+# General
+
+
+
+
+GAME_COINS_ADD: "&6>> &eTryJump &6: &7Du hast &bUnit {UNITID} &7geschafft! Du erhältst §a{tokens} Tokens&7."
+
+
+ITEM_INSTANT_DEATH_COOLDOWN: "&6>> &eTryJump &6: &cBitte warte noch einen Moment, bevor du den Instant Tod ausführst!"
+
+LOBBY_SHOP_SKIP: "&6>> &eTryJump &6: &7Der Spieler &6{PLAYER} &7hat mit &b/skip &7dafür gestimmmt, die Warezeit zu verkürzen &b({PLAYER_PRO}/{MAX_PLAYERS})&7!"
+LOBBY_SHOP_SKIPPED_ALREADY: "&6>> &eTryJump &6: &7Du hast bereits für die Verkürzung der Wartezeit gestimmt!"
+LOBBY_SHOP_SKIPPED: "&6>> &eTryJump &6: &7Die Warezeit wurde auf &b5 Sekunden &7verkürzt!"
+LOBBY_SHOP_MONEY: "&6>> &eTryJump &6: &cDu hast nicht genügend Tokens, um dieses Item zu kaufen!"
+LOBBY_SHOP_MONEY_ENCHANTMENT: "&6>> &eTryJump &6: &cDu hast nicht genügend Tokens, um diese Verzauberung zu kaufen!"
+DEATHMATCH_START: "&6>> &eTryJump &6: &bDEATHMATCH!"
+DEATHMATCH_KILL: "&6>> &eTryJump &6: &7Der Spieler &6{VICTIM} &7wurde von &6{KILLER} &7getötet!"
+DEATHMATCH_SPAWN_PROTECTION: "&6>> &eTryJump &6: &7Du hast 3 Sekunden Spawn-Schutz!"
+DEATHMATCH_ATTACKER_LIVE: "&6>> &eTryJump &6: &7Leben von &6{KILLER} {HEARTS}"
+
+DEATHMATCH_WINNER: "&6>> &eTryJump &6: &7Der Spieler &6{PLAYER} &7hat das Spiel gewonnen!"
+DEATHMATCH_RESTART: "&6>> &eTryJump &6: &cDer Server startet in 10 Sekunden neu."
+
+MEGA_TOKEN_BOOST: "&5&lMEGA TOKEN BOOST &6&l+2000 Tokens"
+
+LOBBY_SHOP_NEXT_ENCHANTMENT: "&6>> &eTryJump &6: &7Die nächste Verzauberungsstufe für dein &b{ITEM} &7 kostet dich: &c400 Tokens&7!"
