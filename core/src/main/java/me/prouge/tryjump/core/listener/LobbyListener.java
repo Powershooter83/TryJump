@@ -1,5 +1,7 @@
 package me.prouge.tryjump.core.listener;
 
+import lombok.Getter;
+import lombok.Setter;
 import me.prouge.tryjump.core.TryJump;
 import me.prouge.tryjump.core.events.GameStartEvent;
 import me.prouge.tryjump.core.events.LobbyStartEvent;
@@ -8,33 +10,33 @@ import me.prouge.tryjump.core.managers.ScoreboardManager;
 import me.prouge.tryjump.core.utils.ChatWriter;
 import me.prouge.tryjump.core.utils.Message;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
+@Singleton
 public class LobbyListener implements Listener {
 
+    @Getter
+    @Setter
+    public int seconds;
     @Inject
     private GameImpl game;
-
     @Inject
     private ChatWriter chatWriter;
-
     @Inject
     private TryJump plugin;
-
     @Inject
     private ScoreboardManager scoreboardManager;
 
-
     @EventHandler
     public void onLobbyStartEvent(final LobbyStartEvent event) {
-
+        seconds = plugin.getConfig().getInt("lobbyDuration");
         new BukkitRunnable() {
-            int seconds = plugin.getConfig().getInt("lobbyDuration");
-
             @Override
             public void run() {
                 if (event.isCancelled()) {
@@ -58,8 +60,11 @@ public class LobbyListener implements Listener {
                     case 3:
                     case 2:
                     case 1:
-                        game.getPlayerArrayList().forEach(p -> chatWriter.print(p, Message.LOBBY_COUNTDOWN,
-                                new String[][]{{"SECONDS", String.valueOf(seconds)}}));
+                        game.getPlayerArrayList().forEach(p -> {
+                            chatWriter.print(p, Message.LOBBY_COUNTDOWN,
+                                    new String[][]{{"SECONDS", String.valueOf(seconds)}});
+                            p.getPlayer().playSound(p.getPlayer().getLocation(), Sound.NOTE_STICKS, 1, 1);
+                        });
                         break;
                     case 0:
                         for (int i = 0; i < 100; i++) {

@@ -3,9 +3,13 @@ package me.prouge.tryjump.core.game.player;
 import lombok.Getter;
 import lombok.Setter;
 import me.prouge.tryjump.core.utils.Direction;
+import me.prouge.tryjump.core.utils.ItemBuilder;
 import org.bukkit.Bukkit;
+import org.bukkit.DyeColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
 
@@ -24,6 +28,10 @@ public class TryJumpPlayer {
     @Getter
     @Setter
     private float walkedDistance = 0;
+
+    @Getter
+    @Setter
+    private Location helpBlockLocation;
 
     @Getter
     @Setter
@@ -115,5 +123,55 @@ public class TryJumpPlayer {
     public void updateWalkedDistance(final double length) {
         this.walkedDistance += length;
     }
+
+    public void addHelpBlock(){
+        switch(this.moduleId){
+            case 1:
+            case 2:
+            case 3:
+                getPlayer().getInventory().addItem(
+                        new ItemBuilder(Material.STAINED_CLAY).
+                                setDyeColor(DyeColor.LIME).
+                                setName("§cHilfsblock")
+                                        .setLore("§8➥ §7Mit §c/reset §7kannst du den Block", "   §7zurückbekommen!",
+                                                "§c§lACHTUNG" + "§8➥ §7Du wirst dabei an den Unit", "   §7Spawn zurück teleportiert!").
+                                toItemStack());
+                break;
+            case 4:
+            case 5:
+            case 6:
+                getPlayer().getInventory().addItem(
+                        new ItemBuilder(Material.STAINED_CLAY).
+                                setDyeColor(DyeColor.ORANGE).
+                                setName("§cHilfsblock")
+                                .setLore("§8➥ §7Mit §c/reset §7kannst du den Block", "   §7zurückbekommen!",
+                                        "§c§lACHTUNG" + "§8➥ §7Du wirst dabei an den Unit", "   §7Spawn zurück teleportiert!").
+                                toItemStack());
+                break;
+            case 7:
+            case 8:
+            case 9:
+                getPlayer().getInventory().addItem(
+                        new ItemBuilder(Material.STAINED_CLAY).
+                                setDyeColor(DyeColor.RED).
+                                setName("§cHilfsblock")
+                                .setLore("§8➥ §7Mit §c/reset §7kannst du den Block", "   §7zurückbekommen!",
+                                        "§c§lACHTUNG" + "§8➥ §7Du wirst dabei an den Unit", "   §7Spawn zurück teleportiert!").
+                                toItemStack());
+                break;
+            case 10:
+                getPlayer().getInventory().addItem(
+                        new ItemBuilder(Material.STAINED_CLAY).
+                                setDyeColor(DyeColor.MAGENTA).
+                                setName("§cHilfsblock")
+                                .setLore("§8➥ §7Mit §c/reset §7kannst du den Block", "   §7zurückbekommen!",
+                                        "§c§lACHTUNG" + "§8➥ §7Du wirst dabei an den Unit", "   §7Spawn zurück teleportiert!").
+                                toItemStack());
+                break;
+        }
+
+        getPlayer().updateInventory();
+    }
+
 
 }

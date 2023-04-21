@@ -43,14 +43,13 @@ SHOP_CATEGORY_SPECIAL: "§bSpezial"
 
 
 # General
-
-
-
-
 GAME_COINS_ADD: "&6>> &eTryJump &6: &7Du hast &bUnit {UNITID} &7geschafft! Du erhältst §a{tokens} Tokens&7."
 
-
 ITEM_INSTANT_DEATH_COOLDOWN: "&6>> &eTryJump &6: &cBitte warte noch einen Moment, bevor du den Instant Tod ausführst!"
+LOBBY_SKIP_FAILURE: "&6>> &eTryJump &6: &cDu kannst die Wartezeit jetzt nicht überspringen."
+LOBBY_SKIP_NO_PERMISSION: "&6>> &eTryJump &6: &cDu benötigst für diesen Command einen höheren Rang!"
+LOBBY_SKIP_SUCCESSFUL: "&6>> &eTryJump &6: &7Die Wartezeit wurde durch &b{PLAYER} &7verkürzt!"
+
 
 LOBBY_SHOP_SKIP: "&6>> &eTryJump &6: &7Der Spieler &6{PLAYER} &7hat mit &b/skip &7dafür gestimmmt, die Warezeit zu verkürzen &b({PLAYER_PRO}/{MAX_PLAYERS})&7!"
 LOBBY_SHOP_SKIPPED_ALREADY: "&6>> &eTryJump &6: &7Du hast bereits für die Verkürzung der Wartezeit gestimmt!"

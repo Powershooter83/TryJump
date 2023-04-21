@@ -6,3 +6,4 @@ main: me.prouge.tryjump.core.TryJump
 commands:
   shop:
   skip:
+  reset:

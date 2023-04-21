@@ -253,8 +253,6 @@ public class GameImpl implements Game {
         if (this.playerArrayList.stream().filter(TryJumpPlayer::isSkipped).count() == this.playerArrayList.size()) {
             scoreboardManager.setTime(LocalTime.of(0, 0, 5));
             playerArrayList.forEach(p -> chatWriter.print(p, Message.LOBBY_SHOP_SKIPPED, null));
-
-            Bukkit.getScheduler().runTaskLater(plugin, () -> Bukkit.getServer().getPluginManager().callEvent(new DeathmatchStartEvent()), 5 * 20);
         }
     }
 

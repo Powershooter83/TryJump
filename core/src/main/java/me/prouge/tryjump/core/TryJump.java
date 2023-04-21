@@ -1,5 +1,6 @@
 package me.prouge.tryjump.core;
 
+import me.prouge.tryjump.core.commands.HelpBlockResetCMD;
 import me.prouge.tryjump.core.commands.SkipCMD;
 import me.prouge.tryjump.core.commands.TestCMD;
 import me.prouge.tryjump.core.inject.InjectionModule;
@@ -22,6 +23,9 @@ public class TryJump extends JavaPlugin {
     private Language language;
     @Inject
     private TestCMD testCMD;
+
+    @Inject
+    private HelpBlockResetCMD helpBlockResetCMD;
 
 
     @Inject
@@ -76,6 +80,7 @@ public class TryJump extends JavaPlugin {
     private void registerCommands() {
         getCommand("shop").setExecutor(testCMD);
         getCommand("skip").setExecutor(skipCMD);
+        getCommand("reset").setExecutor(helpBlockResetCMD);
     }
 
     private void registerListener() {

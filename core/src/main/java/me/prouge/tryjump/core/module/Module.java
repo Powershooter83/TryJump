@@ -1,6 +1,7 @@
 package me.prouge.tryjump.core.module;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.SkullType;
 import org.bukkit.block.*;
 import org.bukkit.material.MaterialData;
@@ -59,6 +60,20 @@ public class Module {
 
     @SuppressWarnings("deprecation")
     private void pasteTheObject(List<MBlock> blocks, Location location) {
+        blocks.sort((block1, block2) -> {
+            Material mat1 = block1.getMaterial();
+            Material mat2 = block2.getMaterial();
+            boolean isSolid1 = mat1.isSolid();
+            boolean isSolid2 = mat2.isSolid();
+            if (isSolid1 && !isSolid2) {
+                return -1;
+            } else if (!isSolid1 && isSolid2) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
+
         blocks.forEach(mBlock -> {
             final Location relativeLoc = new Location(location.getWorld(),
                     mBlock.getPositionX(),

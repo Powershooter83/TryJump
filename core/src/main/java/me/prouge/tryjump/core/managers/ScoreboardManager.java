@@ -3,6 +3,7 @@ package me.prouge.tryjump.core.managers;
 import com.google.inject.Singleton;
 import lombok.Getter;
 import lombok.Setter;
+import me.prouge.tryjump.core.events.GamePlayerFinishedEvent;
 import me.prouge.tryjump.core.game.player.TryJumpPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -22,6 +23,9 @@ public class ScoreboardManager {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("mm:ss");
 
     private Objective objective;
+
+    @Setter
+    private boolean finished = false;
 
 
     public void createScoreboard(final ArrayList<TryJumpPlayer> playerArrayList, final int mapLength) {
@@ -128,7 +132,6 @@ public class ScoreboardManager {
     }
 
     public void updateDeathMatchScoreboard(final ArrayList<TryJumpPlayer> playerArrayList) {
-
         time = time.minusSeconds(1);
 
         playerArrayList.forEach(tp -> {
@@ -158,7 +161,7 @@ public class ScoreboardManager {
 
 
     public void updateScoreboard(final ArrayList<TryJumpPlayer> playerArrayList, final int mapLength) {
-
+        System.out.println("test-3");
         time = time.minusSeconds(1);
         playerArrayList.sort((tp1, tp2) -> Float.compare(tp1.getWalkedDistance(), tp2.getWalkedDistance()));
 
@@ -174,6 +177,10 @@ public class ScoreboardManager {
 
         Team timeTeam = objective.getScoreboard().getTeam("time");
         timeTeam.setSuffix("§b" + time.format(formatter));
+
+        if (time.getMinute() == 0 && time.getSecond() == 0 && !finished) {
+            Bukkit.getServer().getPluginManager().callEvent(new GamePlayerFinishedEvent(null));
+        }
     }
 
     private int calculateScore(TryJumpPlayer tp, final int mapLength) {

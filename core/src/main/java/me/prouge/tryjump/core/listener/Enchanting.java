@@ -1,6 +1,5 @@
 package me.prouge.tryjump.core.listener;
 
-import me.prouge.tryjump.core.TryJump;
 import me.prouge.tryjump.core.game.GameImpl;
 import me.prouge.tryjump.core.game.Phase;
 import me.prouge.tryjump.core.game.player.TryJumpPlayer;
@@ -50,8 +49,12 @@ public class Enchanting implements Listener {
                 gameManager.getGamePhase() != Phase.Game_shop) {
             return;
         }
-
         event.setCancelled(true);
+
+        if (event.getItem() == null) {
+            return;
+        }
+
         enchantItem(event.getItem(), event.getPlayer());
     }
 

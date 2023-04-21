@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.*;
 
 import javax.inject.Inject;
@@ -100,8 +101,13 @@ public class PlayerListener implements Listener {
 
             if (player.getHealth() <= e.getFinalDamage()) {
                 e.setCancelled(true);
-                Bukkit.getPluginManager().callEvent(new DeatchmatchDeathEvent(player,
-                        (Player) e.getDamager()));
+                if (e.getDamager() instanceof Player) {
+                    Bukkit.getPluginManager().callEvent(new DeatchmatchDeathEvent(player,
+                            (Player) e.getDamager()));
+                } else {
+                    Bukkit.getPluginManager().callEvent(new DeatchmatchDeathEvent(player, null));
+                }
+
             }
         }
 
@@ -112,5 +118,4 @@ public class PlayerListener implements Listener {
         event.setCancelled(true);
         Bukkit.broadcastMessage("§a" + event.getPlayer().getName() + " §8» §f" + event.getMessage());
     }
-
 }

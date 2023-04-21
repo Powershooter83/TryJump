@@ -3,6 +3,8 @@ package me.prouge.tryjump.core.commands;
 import me.prouge.tryjump.core.game.GameImpl;
 import me.prouge.tryjump.core.game.Phase;
 import me.prouge.tryjump.core.game.player.TryJumpPlayer;
+import me.prouge.tryjump.core.listener.LobbyListener;
+import me.prouge.tryjump.core.managers.ScoreboardManager;
 import me.prouge.tryjump.core.utils.ChatWriter;
 import me.prouge.tryjump.core.utils.Message;
 import org.bukkit.Bukkit;
@@ -12,6 +14,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import javax.inject.Inject;
+import java.time.LocalTime;
 
 public class SkipCMD implements CommandExecutor {
 
@@ -21,9 +24,19 @@ public class SkipCMD implements CommandExecutor {
     @Inject
     private ChatWriter chatWriter;
 
+    @Inject
+    private LobbyListener lobbyListener;
+
+    @Inject
+    private ScoreboardManager scoreboardManager;
 
     @Override
     public boolean onCommand(final CommandSender sender, final Command command, final String s, final String[] args) {
+        if (game.getGamePhase().equals(Phase.Lobby_with_countdown)) {
+            lobbyListener.setSeconds(10);
+        }
+
+
         if (game.getGamePhase() != Phase.Game_shop) {
             return false;
         }

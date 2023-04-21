@@ -15,6 +15,7 @@ import net.minecraft.server.v1_8_R3.PacketPlayOutTitle;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -63,6 +64,7 @@ public class DeathmatchListener implements Listener {
 
     @EventHandler
     public void onDeathmatchStartEvent(final DeathmatchStartEvent event) {
+        System.out.println("DEATCHMATCH-START-EVENT");
         scoreboardManager.createDeathMatchScoreboard(game.getPlayerArrayList());
 
         new BukkitRunnable() {
@@ -102,36 +104,43 @@ public class DeathmatchListener implements Listener {
         victim.setHealth(victim.getMaxHealth());
 
         TryJumpPlayer tryp = game.getTryPlayer(victim);
+        victim.setFoodLevel(20);
         tryp.setTimeStamp(System.currentTimeMillis());
 
         tryp.setDeathMatchDeaths((byte) (tryp.getDeathMatchDeaths() + 1));
 
+        if (attacker != null) {
+            attacker.playSound(attacker.getLocation(), Sound.SUCCESSFUL_HIT, 1, 1);
+            this.game.getPlayerArrayList().forEach(tp -> chatWriter.print(tp, Message.DEATHMATCH_KILL, new String[][]{
+                    {"VICTIM", victim.getName()}, {"KILLER", attacker.getName()}}));
 
-        this.game.getPlayerArrayList().forEach(tp -> chatWriter.print(tp, Message.DEATHMATCH_KILL, new String[][]{
-                {"VICTIM", victim.getName()}, {"KILLER", attacker.getName()}}));
 
+            double hearts = attacker.getHealth();
+            double maxHearts = attacker.getMaxHealth();
+            StringBuilder health = new StringBuilder();
+            health.append("§c");
 
-        double hearts = attacker.getHealth();
-        double maxHearts = attacker.getMaxHealth();
-        StringBuilder health = new StringBuilder();
-        health.append("§c");
+            if (hearts % 2 != 0) {
+                health.append("❥");
+                hearts = hearts - 2;
+            }
 
-        if (hearts % 2 != 0) {
-            health.append("❥");
-            hearts = hearts - 2;
+            for (int i = 0; i < hearts / 2; i++) {
+                health.append("❤");
+            }
+            health.append("§7");
+            for (int i = 0; i < (maxHearts - hearts) / 2; i++) {
+                health.append("❤");
+            }
+
+            chatWriter.print(tryp, Message.DEATHMATCH_ATTACKER_LIVE, new String[][]{{
+                    "KILLER", attacker.getName()},
+                    {"HEARTS", health.toString()}});
+        } else {
+            this.game.getPlayerArrayList().forEach(tp -> chatWriter.print(tp, Message.DEATHMATCH_KILL, new String[][]{
+                    {"VICTIM", victim.getName()}, {"KILLER", "TNT"}}));
         }
 
-        for (int i = 0; i < hearts / 2; i++) {
-            health.append("❤");
-        }
-        health.append("§7");
-        for (int i = 0; i < (maxHearts - hearts) / 2; i++) {
-            health.append("❤");
-        }
-
-        chatWriter.print(tryp, Message.DEATHMATCH_ATTACKER_LIVE, new String[][]{{
-                "KILLER", attacker.getName()},
-                {"HEARTS", health.toString()}});
 
         if (tryp.getDeathMatchDeaths() == 3) {
             this.game.getPlayerArrayList().forEach(tp -> chatWriter.print(tp, Message.PLAYER_QUIT_MESSAGE, new String[][]{{"PLAYER", victim.getName()}}));
@@ -156,8 +165,7 @@ public class DeathmatchListener implements Listener {
             chatWriter.print(tryp, Message.DEATHMATCH_SPAWN_PROTECTION, null);
             victim.teleport(game.calculateSpawn());
         }
-
-
+        victim.playSound(victim.getLocation(), Sound.NOTE_PLING, 1, 1);
     }
 
 }
