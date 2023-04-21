@@ -4,7 +4,6 @@ import com.google.inject.Singleton;
 import lombok.Getter;
 import lombok.Setter;
 import me.prouge.tryjump.core.TryJump;
-import me.prouge.tryjump.core.events.DeathmatchStartEvent;
 import me.prouge.tryjump.core.events.GamePlayerFinishedEvent;
 import me.prouge.tryjump.core.events.LobbyStartEvent;
 import me.prouge.tryjump.core.game.player.TryJumpPlayer;
@@ -13,14 +12,19 @@ import me.prouge.tryjump.core.module.MDifficulty;
 import me.prouge.tryjump.core.module.MLoader;
 import me.prouge.tryjump.core.module.Module;
 import me.prouge.tryjump.core.utils.ChatWriter;
+import me.prouge.tryjump.core.utils.ItemBuilder;
 import me.prouge.tryjump.core.utils.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.inject.Inject;
-import java.io.File;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -38,15 +42,12 @@ public class GameImpl implements Game {
     private final ArrayList<TryJumpPlayer> playerArrayList = new ArrayList<>();
     @Getter
     private final ArrayList<Location> spawnLocations = new ArrayList<>();
-
-    private int MIN_PLAYERS = 0;
-    private int MAX_PLAYERS = 2;
-
     @Getter
     private final ArrayList<Location> deathMatchSpawnLocations = new ArrayList<>();
-
     private final TryJump plugin;
     private final MLoader loader;
+    private int MIN_PLAYERS = 0;
+    private int MAX_PLAYERS = 2;
     @Getter
     private int mapLength = 0;
     private boolean hasRunningActionbar = false;
@@ -277,12 +278,19 @@ public class GameImpl implements Game {
     @Override
     public void addPlayer(final Player player) {
         if (spawnLocations.size() == 0) {
-            this.spawnLocations.addAll(plugin.getConfig().getConfigurationSection("Spawns").getValues(false).values().stream()
-                    .map(Location.class::cast)
-                    .collect(Collectors.toList()));
-            this.deathMatchSpawnLocations.addAll(plugin.getConfig().getConfigurationSection("DeathMatchSpawns").getValues(false).values().stream()
-                    .map(Location.class::cast)
-                    .collect(Collectors.toList()));
+            File locationsFile = new File(plugin.getDataFolder().getPath() + "/" + "locations.yml");
+            try {
+                Reader defConfigStream = new InputStreamReader(new FileInputStream(locationsFile), StandardCharsets.UTF_8);
+                YamlConfiguration config = YamlConfiguration.loadConfiguration(defConfigStream);
+                this.spawnLocations.addAll(config.getConfigurationSection("Spawns").getValues(false).values().stream()
+                        .map(Location.class::cast)
+                        .collect(Collectors.toList()));
+                this.deathMatchSpawnLocations.addAll(config.getConfigurationSection("DeathMatchSpawns").getValues(false).values().stream()
+                        .map(Location.class::cast)
+                        .collect(Collectors.toList()));
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
             this.MIN_PLAYERS = (int) plugin.getConfig().get("minPlayers");
             this.MAX_PLAYERS = (int) plugin.getConfig().get("maxPlayers");
         }
@@ -300,6 +308,12 @@ public class GameImpl implements Game {
         checkGamePhase();
 
         player.teleport((Location) plugin.getConfig().get("Lobby"));
+        ItemStack itemStack = new ItemBuilder(Material.INK_SACK, 1, (byte) 1)
+                .setName("§8» §cSpielverlassen §7<Rechtsklick>")
+                .toItemStack();
+
+        player.getInventory().setItem(8, itemStack);
+        player.updateInventory();
     }
 
 

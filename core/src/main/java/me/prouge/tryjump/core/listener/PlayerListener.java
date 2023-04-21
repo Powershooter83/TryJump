@@ -1,5 +1,8 @@
 package me.prouge.tryjump.core.listener;
 
+import de.dytanic.cloudnet.driver.CloudNetDriver;
+import de.dytanic.cloudnet.ext.bridge.player.IPlayerManager;
+import de.dytanic.cloudnet.ext.bridge.player.executor.ServerSelectorType;
 import me.prouge.tryjump.core.TryJump;
 import me.prouge.tryjump.core.events.DeatchmatchDeathEvent;
 import me.prouge.tryjump.core.events.GameDeathEvent;
@@ -15,7 +18,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.*;
 
 import javax.inject.Inject;
@@ -24,11 +26,12 @@ import static me.prouge.tryjump.core.game.Phase.Game_running;
 
 //@RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class PlayerListener implements Listener {
+    private final IPlayerManager playerManager = CloudNetDriver.getInstance().getServicesRegistry()
+            .getFirstService(IPlayerManager.class);
     @Inject
     private Shop shop;
     @Inject
     private GameImpl gameImpl;
-
     @Inject
     private TryJump plugin;
 
@@ -82,6 +85,11 @@ public class PlayerListener implements Listener {
                 }, 1L);
             }
         } else if (e.getPlayer().getItemInHand().getType().equals(Material.INK_SACK)) {
+            if (gameImpl.getGamePhase().equals(Phase.Lobby_without_countdown) || gameImpl.getGamePhase().equals(Phase.Lobby_with_countdown)) {
+                playerManager.getPlayerExecutor(e.getPlayer().getUniqueId()).connectToTask("Lobby", ServerSelectorType.HIGHEST_PLAYERS);
+                return;
+            }
+
             Bukkit.getPluginManager().callEvent(new GameDeathEvent(e.getPlayer(), false));
         } else if (e.getPlayer().getItemInHand().getType().equals(Material.CHEST)) {
             this.shop.openShop(e.getPlayer());

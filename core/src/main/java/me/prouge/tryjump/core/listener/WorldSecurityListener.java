@@ -26,7 +26,6 @@ public class WorldSecurityListener implements Listener {
 
     @Inject
     private GameImpl gameManager;
-
     @Inject
     private TryJump plugin;
 
@@ -85,7 +84,6 @@ public class WorldSecurityListener implements Listener {
             e.setCancelled(true);
         }
     }
-
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
