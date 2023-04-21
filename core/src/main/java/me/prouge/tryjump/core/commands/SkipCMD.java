@@ -14,7 +14,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import javax.inject.Inject;
-import java.time.LocalTime;
 
 public class SkipCMD implements CommandExecutor {
 
@@ -27,21 +26,30 @@ public class SkipCMD implements CommandExecutor {
     @Inject
     private LobbyListener lobbyListener;
 
-    @Inject
-    private ScoreboardManager scoreboardManager;
-
     @Override
     public boolean onCommand(final CommandSender sender, final Command command, final String s, final String[] args) {
-        if (game.getGamePhase().equals(Phase.Lobby_with_countdown)) {
-            lobbyListener.setSeconds(10);
+        Player player = (Player) sender;
+        TryJumpPlayer tryPlayer = game.getTryPlayer((Player) sender);
+        if (game.getGamePhase().equals(Phase.Lobby_without_countdown) ||
+                game.getGamePhase().equals(Phase.Lobby_with_countdown) &&
+                        lobbyListener.getSeconds() <= 10) {
+            chatWriter.print(tryPlayer, Message.LOBBY_SKIP_FAILURE, null);
+            return false;
         }
 
+        if (game.getGamePhase().equals(Phase.Lobby_with_countdown)) {
+            if (sender.hasPermission("tryjump.lobby.skip")) {
+                game.getPlayerArrayList().forEach(tp -> chatWriter.print(tp, Message.LOBBY_SKIP_SUCCESSFUL, new String[][]{{"PLAYER", player.getName()}}));
+                lobbyListener.setSeconds(10);
+                return false;
+            }
+            chatWriter.print(tryPlayer, Message.LOBBY_SKIP_NO_PERMISSION, null);
+        }
 
         if (game.getGamePhase() != Phase.Game_shop) {
             return false;
         }
 
-        TryJumpPlayer tryPlayer = game.getTryPlayer((Player) sender);
 
         if (tryPlayer.isSkipped()) {
             chatWriter.print(tryPlayer, Message.LOBBY_SHOP_SKIPPED_ALREADY, null);
@@ -55,4 +63,5 @@ public class SkipCMD implements CommandExecutor {
         game.skipShop();
         return false;
     }
+
 }
