@@ -68,7 +68,7 @@ public class WorldGameListener implements Listener {
 
 
     private void clearLag() {
-        World world = Bukkit.getServer().getWorld("TryJump");
+        World world = Bukkit.getServer().getWorld("tryjump");
         List<org.bukkit.entity.Entity> entList = world.getEntities();
 
         for (Entity current : entList) {
