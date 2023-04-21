@@ -2,8 +2,9 @@ name: TJcore
 author: Prouge
 version: ${project.version}
 description: ${project.description}
+loadbefore:
+  - LuckPerms
 main: me.prouge.tryjump.core.TryJump
 commands:
-  shop:
   skip:
   reset:

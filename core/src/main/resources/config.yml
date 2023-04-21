@@ -1,3 +1,5 @@
-maxPlayers: 10
+maxPlayers: 8
 minPlayers: 2
 lobbyDuration: 60
+deathmatch: ""
+teamSize: 1

@@ -1,5 +1,6 @@
 package me.prouge.tryjump.core.listener;
 
+import de.dytanic.cloudnet.ext.bridge.server.BridgeServerHelper;
 import lombok.Getter;
 import lombok.Setter;
 import me.prouge.tryjump.core.TryJump;
@@ -67,6 +68,7 @@ public class LobbyListener implements Listener {
                         });
                         break;
                     case 0:
+                        startServer();
                         for (int i = 0; i < 100; i++) {
                             game.getPlayerArrayList().forEach(p -> p.getPlayer().sendMessage(""));
                         }
@@ -84,6 +86,10 @@ public class LobbyListener implements Listener {
             }
         }.runTaskTimer(plugin, 0, 20L);
 
+    }
+
+    private void startServer() {
+        BridgeServerHelper.changeToIngame();
     }
 
 }

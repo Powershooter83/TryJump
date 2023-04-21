@@ -6,3 +6,5 @@ main: me.prouge.tryjump.creator.TryJump
 commands:
   module:
     aliases: md
+  setup:
+    aliases: s

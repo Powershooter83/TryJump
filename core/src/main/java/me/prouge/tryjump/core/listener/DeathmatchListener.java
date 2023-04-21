@@ -1,5 +1,10 @@
 package me.prouge.tryjump.core.listener;
 
+import de.dytanic.cloudnet.driver.CloudNetDriver;
+import de.dytanic.cloudnet.driver.provider.service.SpecificCloudServiceProvider;
+import de.dytanic.cloudnet.driver.service.ServiceId;
+import de.dytanic.cloudnet.ext.bridge.player.IPlayerManager;
+import de.dytanic.cloudnet.ext.bridge.player.executor.ServerSelectorType;
 import me.prouge.tryjump.core.TryJump;
 import me.prouge.tryjump.core.events.DeatchmatchDeathEvent;
 import me.prouge.tryjump.core.events.DeathmatchEndEvent;
@@ -29,18 +34,17 @@ import java.util.Optional;
 
 public class DeathmatchListener implements Listener {
 
+    private final IPlayerManager playerManager = CloudNetDriver.getInstance().getServicesRegistry()
+            .getFirstService(IPlayerManager.class);
+
     @Inject
     private GameImpl game;
-
     @Inject
     private TryJump plugin;
-
     @Inject
     private ChatWriter chatWriter;
-
     @Inject
     private ScoreboardManager scoreboardManager;
-
 
     @EventHandler
     public void onDeathmatchEndEvent(final DeathmatchEndEvent event) {
@@ -60,11 +64,21 @@ public class DeathmatchListener implements Listener {
 
         Bukkit.getScheduler().runTaskLater(plugin, Bukkit::shutdown, 10 * 20);
 
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            ServiceId serviceId = null;
+
+            for (TryJumpPlayer tp : game.getPlayerArrayList()) {
+                serviceId = playerManager.getOnlinePlayer(tp.getUniqueId()).getConnectedService().getServiceId();
+                playerManager.getPlayerExecutor(tp.getUniqueId()).connectToTask("Lobby", ServerSelectorType.HIGHEST_PLAYERS);
+            }
+            SpecificCloudServiceProvider service = CloudNetDriver.getInstance().getCloudServiceProvider(serviceId.getUniqueId());
+            service.stop();
+        }, 10 * 20);
+
     }
 
     @EventHandler
     public void onDeathmatchStartEvent(final DeathmatchStartEvent event) {
-        System.out.println("DEATCHMATCH-START-EVENT");
         scoreboardManager.createDeathMatchScoreboard(game.getPlayerArrayList());
 
         new BukkitRunnable() {

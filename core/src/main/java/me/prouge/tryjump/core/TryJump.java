@@ -1,8 +1,8 @@
 package me.prouge.tryjump.core;
 
+import de.dytanic.cloudnet.ext.bridge.server.BridgeServerHelper;
 import me.prouge.tryjump.core.commands.HelpBlockResetCMD;
 import me.prouge.tryjump.core.commands.SkipCMD;
-import me.prouge.tryjump.core.commands.TestCMD;
 import me.prouge.tryjump.core.inject.InjectionModule;
 import me.prouge.tryjump.core.listener.*;
 import me.prouge.tryjump.core.utils.Language;
@@ -21,8 +21,6 @@ public class TryJump extends JavaPlugin {
 
     @Inject
     private Language language;
-    @Inject
-    private TestCMD testCMD;
 
     @Inject
     private HelpBlockResetCMD helpBlockResetCMD;
@@ -54,19 +52,22 @@ public class TryJump extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        new InjectionModule(this);
-        registerCommands();
-        language.setup();
-
+        BridgeServerHelper.setMaxPlayers(getConfig().getInt("maxPlayers"));
+        BridgeServerHelper.setMotd((String) getConfig().get("deathmatch"));
+        int numberOfTeams = getConfig().getInt("maxPlayers") / getConfig().getInt("teamSize");
+        String teams = numberOfTeams + "x" + getConfig().getInt("teamSize");
+        BridgeServerHelper.setExtra(teams);
+        BridgeServerHelper.updateServiceInfo();
         if (!(new File(this.getDataFolder().getPath() + File.separator + "config.yml").exists())) {
             this.getConfig().options().copyDefaults(true);
             this.saveConfig();
         }
-
+        new InjectionModule(this);
+        registerCommands();
+        language.setup();
 
         World world = new WorldCreator("tryjump").createWorld();
         world.setAutoSave(false);
-
         World pvp = new WorldCreator("deathmatch").createWorld();
         pvp.setAutoSave(false);
         registerListener();
@@ -78,7 +79,6 @@ public class TryJump extends JavaPlugin {
     }
 
     private void registerCommands() {
-        getCommand("shop").setExecutor(testCMD);
         getCommand("skip").setExecutor(skipCMD);
         getCommand("reset").setExecutor(helpBlockResetCMD);
     }
