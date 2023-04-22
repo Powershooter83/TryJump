@@ -26,6 +26,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.inject.Inject;
@@ -128,6 +131,8 @@ public class DeathmatchListener implements Listener {
             this.game.getPlayerArrayList().forEach(tp -> chatWriter.print(tp, Message.DEATHMATCH_KILL, new String[][]{
                     {"VICTIM", victim.getName()}, {"KILLER", attacker.getName()}}));
 
+            attacker.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 5 * 20, 0, false, false));
+            Bukkit.getScheduler().scheduleSyncDelayedTask((Plugin) this, () -> attacker.removePotionEffect(PotionEffectType.REGENERATION), 5 * 20);
 
             double hearts = attacker.getHealth();
             double maxHearts = attacker.getMaxHealth();
@@ -159,6 +164,7 @@ public class DeathmatchListener implements Listener {
         if (tryp.getDeathMatchDeaths() == 3) {
             this.game.getPlayerArrayList().forEach(tp -> chatWriter.print(tp, Message.PLAYER_QUIT_MESSAGE, new String[][]{{"PLAYER", victim.getName()}}));
             victim.setGameMode(GameMode.ADVENTURE);
+            victim.getInventory().clear();
             victim.setAllowFlight(true);
             victim.setFlying(true);
             victim.teleport(victim.getLocation().add(0, 5, 0));

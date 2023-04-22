@@ -96,7 +96,10 @@ public class GameListener implements Listener {
                 .setName("§c§lInstant-Tod(TM) §7§o<Rechtsklick>")
                 .toItemStack();
 
-        game.getPlayerArrayList().forEach(tj -> tj.getPlayer().getInventory().setItem(4, itemStack));
+        game.getPlayerArrayList().forEach(tj -> {
+            tj.getPlayer().getInventory().clear();
+            tj.getPlayer().getInventory().setItem(4, itemStack);
+        });
 
         new BukkitRunnable() {
             int seconds = 10;
