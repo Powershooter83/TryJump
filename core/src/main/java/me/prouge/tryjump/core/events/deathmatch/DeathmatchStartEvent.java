@@ -1,14 +1,9 @@
-package me.prouge.tryjump.core.events;
+package me.prouge.tryjump.core.events.deathmatch;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-@AllArgsConstructor
-public class GameStartEvent extends Event implements Cancellable {
+public class DeathmatchStartEvent extends Event {
 
     private static final HandlerList HANDLERS = new HandlerList();
 
@@ -20,9 +15,5 @@ public class GameStartEvent extends Event implements Cancellable {
     public HandlerList getHandlers() {
         return HANDLERS;
     }
-
-    @Getter
-    @Setter
-    private boolean cancelled;
 
 }

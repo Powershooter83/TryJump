@@ -6,14 +6,15 @@ import de.dytanic.cloudnet.driver.service.ServiceId;
 import de.dytanic.cloudnet.ext.bridge.player.IPlayerManager;
 import de.dytanic.cloudnet.ext.bridge.player.executor.ServerSelectorType;
 import me.prouge.tryjump.core.TryJump;
-import me.prouge.tryjump.core.events.DeatchmatchDeathEvent;
-import me.prouge.tryjump.core.events.DeathmatchEndEvent;
-import me.prouge.tryjump.core.events.DeathmatchStartEvent;
+import me.prouge.tryjump.core.events.deathmatch.DeatchmatchDeathEvent;
+import me.prouge.tryjump.core.events.deathmatch.DeathmatchEndEvent;
+import me.prouge.tryjump.core.events.deathmatch.DeathmatchStartEvent;
 import me.prouge.tryjump.core.game.GameImpl;
 import me.prouge.tryjump.core.game.Phase;
 import me.prouge.tryjump.core.game.player.TryJumpPlayer;
 import me.prouge.tryjump.core.managers.ScoreboardManager;
 import me.prouge.tryjump.core.utils.ChatWriter;
+import me.prouge.tryjump.core.utils.ItemBuilder;
 import me.prouge.tryjump.core.utils.Message;
 import net.minecraft.server.v1_8_R3.IChatBaseComponent;
 import net.minecraft.server.v1_8_R3.PacketPlayOutTitle;
@@ -26,14 +27,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.inject.Inject;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class DeathmatchListener implements Listener {
 
@@ -59,6 +61,7 @@ public class DeathmatchListener implements Listener {
             PacketPlayOutTitle title = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, emptyTitle);
             chatWriter.print(tp, Message.DEATHMATCH_WINNER, new String[][]{{"PLAYER", event.getWinner().getPlayer().getName()}});
             chatWriter.print(tp, Message.DEATHMATCH_RESTART, null);
+            printRoundStats(tp);
             Player player = tp.getPlayer();
             ((CraftPlayer) player).getHandle().playerConnection.sendPacket(title);
             ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.SUBTITLE, chatTitle));
@@ -71,7 +74,7 @@ public class DeathmatchListener implements Listener {
             ServiceId serviceId = null;
 
             for (TryJumpPlayer tp : game.getPlayerArrayList()) {
-                serviceId = playerManager.getOnlinePlayer(tp.getUniqueId()).getConnectedService().getServiceId();
+                serviceId = Objects.requireNonNull(playerManager.getOnlinePlayer(tp.getUniqueId())).getConnectedService().getServiceId();
                 playerManager.getPlayerExecutor(tp.getUniqueId()).connectToTask("Lobby", ServerSelectorType.HIGHEST_PLAYERS);
             }
             SpecificCloudServiceProvider service = CloudNetDriver.getInstance().getCloudServiceProvider(serviceId.getUniqueId());
@@ -79,6 +82,15 @@ public class DeathmatchListener implements Listener {
         }, 10 * 20);
 
     }
+
+    private void printRoundStats(TryJumpPlayer tryJumpPlayer) {
+        chatWriter.print(tryJumpPlayer, Message.GAME_STATS_TITLE, null);
+        chatWriter.print(tryJumpPlayer, Message.GAME_STATS_KILLS, new String[][]{{"KILLS", String.valueOf(tryJumpPlayer.getKills())}});
+        chatWriter.print(tryJumpPlayer, Message.GAME_STATS_DEATHS, new String[][]{{"DEATHS", String.valueOf(tryJumpPlayer.getDeathMatchDeaths())}});
+        chatWriter.print(tryJumpPlayer, Message.GAME_STATS_UNIT_DEATHS, new String[][]{{"UNITS_DONE", String.valueOf(tryJumpPlayer.getModuleId())}});
+        chatWriter.print(tryJumpPlayer, Message.GAME_STATS_UNITS_DONE, new String[][]{{"UNIT_DEATHS", String.valueOf(tryJumpPlayer.getTotalUnitDeaths())}});
+    }
+
 
     @EventHandler
     public void onDeathmatchStartEvent(final DeathmatchStartEvent event) {
@@ -88,6 +100,7 @@ public class DeathmatchListener implements Listener {
             @Override
             public void run() {
                 scoreboardManager.updateDeathMatchScoreboard(game.getPlayerArrayList());
+                updateCompass();
             }
         }.runTaskTimer(plugin, 0, 20L);
 
@@ -109,15 +122,37 @@ public class DeathmatchListener implements Listener {
                     break;
                 }
             }
+            player.getInventory().addItem(new ItemBuilder(Material.COMPASS).toItemStack());
             index++;
         }
     }
 
 
+    private void updateCompass() {
+        Bukkit.getOnlinePlayers().forEach(player -> player.setCompassTarget(getNearestPlayer(player).getLocation()));
+    }
+
+    private Player getNearestPlayer(Player player) {
+        Player nearest = null;
+        double minDistance = Double.MAX_VALUE;
+
+        for (Player loopPlayer : Bukkit.getOnlinePlayers().stream().filter(loop -> loop != player).collect(Collectors.toList())) {
+            double distance = loopPlayer.getLocation().distance(player.getLocation());
+            if (distance < minDistance) {
+                nearest = loopPlayer;
+                minDistance = distance;
+            }
+        }
+        return nearest;
+    }
+
     @EventHandler
     public void onDeathmatchDeatchEvent(final DeatchmatchDeathEvent event) {
         Player victim = event.getVictim();
         Player attacker = event.getAttacker();
+        victim.setFireTicks(0);
+
+        victim.getActivePotionEffects().forEach(effect -> victim.removePotionEffect(effect.getType()));
         victim.setHealth(victim.getMaxHealth());
 
         TryJumpPlayer tryp = game.getTryPlayer(victim);
@@ -131,8 +166,9 @@ public class DeathmatchListener implements Listener {
             this.game.getPlayerArrayList().forEach(tp -> chatWriter.print(tp, Message.DEATHMATCH_KILL, new String[][]{
                     {"VICTIM", victim.getName()}, {"KILLER", attacker.getName()}}));
 
-            attacker.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 5 * 20, 0, false, false));
-            Bukkit.getScheduler().scheduleSyncDelayedTask((Plugin) this, () -> attacker.removePotionEffect(PotionEffectType.REGENERATION), 5 * 20);
+            game.getTryPlayer(attacker).setKills(game.getTryPlayer(attacker).getKills() + 1);
+
+            attacker.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 5 * 20, 1, false, false));
 
             double hearts = attacker.getHealth();
             double maxHearts = attacker.getMaxHealth();
@@ -160,9 +196,8 @@ public class DeathmatchListener implements Listener {
                     {"VICTIM", victim.getName()}, {"KILLER", "TNT"}}));
         }
 
-
         if (tryp.getDeathMatchDeaths() == 3) {
-            this.game.getPlayerArrayList().forEach(tp -> chatWriter.print(tp, Message.PLAYER_QUIT_MESSAGE, new String[][]{{"PLAYER", victim.getName()}}));
+            this.game.getPlayerArrayList().forEach(tp -> chatWriter.print(tp, Message.GAME_QUIT_MESSAGE, new String[][]{{"PLAYER", victim.getName()}}));
             victim.setGameMode(GameMode.ADVENTURE);
             victim.getInventory().clear();
             victim.setAllowFlight(true);

@@ -65,7 +65,7 @@ public class Enchanting implements Listener {
         if (CraftItemStack.asNMSCopy(item).getItem() instanceof ItemSword) {
             if (tryPlayer.isNextSwordPrice() && tryPlayer.getTokens() < 400
                     || !tryPlayer.isNextSwordPrice() && tryPlayer.getTokens() < 250) {
-                chatWriter.print(tryPlayer, Message.LOBBY_SHOP_MONEY_ENCHANTMENT, null);
+                chatWriter.print(tryPlayer, Message.SHOP_NOT_ENOUGH_MONEY_ENCHANTMENT, null);
                 return;
             }
 
@@ -77,7 +77,7 @@ public class Enchanting implements Listener {
                 tryPlayer.setTokens(tryPlayer.getTokens() - 250);
                 tryPlayer.setNextSwordPrice(true);
             }
-            chatWriter.print(tryPlayer, Message.LOBBY_SHOP_NEXT_ENCHANTMENT, new String[][]{{"ITEM", "Schwert"}});
+            chatWriter.print(tryPlayer, Message.SHOP_NEXT_ENCHANTMENT, new String[][]{{"ITEM", "Schwert"}});
 
             ItemMeta meta = item.getItemMeta();
 
@@ -99,7 +99,7 @@ public class Enchanting implements Listener {
         if (CraftItemStack.asNMSCopy(item).getItem() instanceof ItemBow) {
             if (tryPlayer.isNextBowPrice() && tryPlayer.getTokens() < 400
                     || !tryPlayer.isNextBowPrice() && tryPlayer.getTokens() < 250) {
-                chatWriter.print(tryPlayer, Message.LOBBY_SHOP_MONEY_ENCHANTMENT, null);
+                chatWriter.print(tryPlayer, Message.SHOP_NOT_ENOUGH_MONEY_ENCHANTMENT, null);
                 return;
             }
 
@@ -111,7 +111,7 @@ public class Enchanting implements Listener {
                 tryPlayer.setTokens(tryPlayer.getTokens() - 250);
                 tryPlayer.setNextBowPrice(true);
             }
-            chatWriter.print(tryPlayer, Message.LOBBY_SHOP_NEXT_ENCHANTMENT, new String[][]{{"ITEM", "Bogen"}});
+            chatWriter.print(tryPlayer, Message.SHOP_NEXT_ENCHANTMENT, new String[][]{{"ITEM", "Bogen"}});
 
 
             ItemMeta meta = item.getItemMeta();
@@ -138,7 +138,7 @@ public class Enchanting implements Listener {
         if (CraftItemStack.asNMSCopy(item).getItem() instanceof ItemFishingRod) {
             if (tryPlayer.isNextFishingRodPrice() && tryPlayer.getTokens() < 400
                     || !tryPlayer.isNextFishingRodPrice() && tryPlayer.getTokens() < 250) {
-                chatWriter.print(tryPlayer, Message.LOBBY_SHOP_MONEY_ENCHANTMENT, null);
+                chatWriter.print(tryPlayer, Message.SHOP_NOT_ENOUGH_MONEY_ENCHANTMENT, null);
                 return;
             }
 
@@ -150,7 +150,7 @@ public class Enchanting implements Listener {
                 tryPlayer.setTokens(tryPlayer.getTokens() - 250);
                 tryPlayer.setNextFishingRodPrice(true);
             }
-            chatWriter.print(tryPlayer, Message.LOBBY_SHOP_NEXT_ENCHANTMENT, new String[][]{{"ITEM", "Angel"}});
+            chatWriter.print(tryPlayer, Message.SHOP_NEXT_ENCHANTMENT, new String[][]{{"ITEM", "Angel"}});
 
 
             ItemMeta meta = item.getItemMeta();
@@ -161,7 +161,7 @@ public class Enchanting implements Listener {
         }
         if (CraftItemStack.asNMSCopy(item).getItem() instanceof ItemArmor) {
             if (tryPlayer.getTokens() < 250) {
-                chatWriter.print(tryPlayer, Message.LOBBY_SHOP_MONEY_ENCHANTMENT, null);
+                chatWriter.print(tryPlayer, Message.SHOP_NOT_ENOUGH_MONEY_ENCHANTMENT, null);
                 return;
             }
             tryPlayer.setTokens(tryPlayer.getTokens() - 250);

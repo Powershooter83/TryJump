@@ -24,7 +24,8 @@ public class Shop {
 
 
     public void openShop(final Player player) {
-        final Inventory inventory = Bukkit.createInventory(null, 27, "§6>> §eTryJump Shop");
+        final Inventory inventory = Bukkit.createInventory(null, 27,
+                chatWriter.getItemStackName(game.getTryPlayer(player), Message.SHOP_INVENTORY_NAME));
         initializeCategories(inventory, game.getTryPlayer(player));
 
         player.openInventory(inventory);

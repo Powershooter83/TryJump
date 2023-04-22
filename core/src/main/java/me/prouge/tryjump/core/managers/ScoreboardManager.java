@@ -3,7 +3,7 @@ package me.prouge.tryjump.core.managers;
 import com.google.inject.Singleton;
 import lombok.Getter;
 import lombok.Setter;
-import me.prouge.tryjump.core.events.GamePlayerFinishedEvent;
+import me.prouge.tryjump.core.events.game.GamePlayerFinishedEvent;
 import me.prouge.tryjump.core.game.player.TryJumpPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -161,7 +161,6 @@ public class ScoreboardManager {
 
 
     public void updateScoreboard(final ArrayList<TryJumpPlayer> playerArrayList, final int mapLength) {
-        System.out.println("test-3");
         time = time.minusSeconds(1);
         playerArrayList.sort((tp1, tp2) -> Float.compare(tp1.getWalkedDistance(), tp2.getWalkedDistance()));
 

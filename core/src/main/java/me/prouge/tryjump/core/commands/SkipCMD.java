@@ -52,11 +52,11 @@ public class SkipCMD implements CommandExecutor {
 
 
         if (tryPlayer.isSkipped()) {
-            chatWriter.print(tryPlayer, Message.LOBBY_SHOP_SKIPPED_ALREADY, null);
+            chatWriter.print(tryPlayer, Message.SHOP_SKIPPED_ALREADY, null);
             return false;
         }
         tryPlayer.setSkipped(true);
-        game.getPlayerArrayList().forEach(tp -> chatWriter.print(tp, Message.LOBBY_SHOP_SKIP, new String[][]{{
+        game.getPlayerArrayList().forEach(tp -> chatWriter.print(tp, Message.SHOP_SKIP, new String[][]{{
                 "PLAYER", Bukkit.getPlayer(tryPlayer.getUniqueId()).getName()},
                 {"PLAYER_PRO", String.valueOf(game.getPlayerArrayList().stream().filter(TryJumpPlayer::isSkipped).count())},
                 {"MAX_PLAYERS", String.valueOf(game.getPlayerArrayList().size())}}));

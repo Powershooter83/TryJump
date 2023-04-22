@@ -1,6 +1,6 @@
 package me.prouge.tryjump.core.commands;
 
-import me.prouge.tryjump.core.events.GameDeathEvent;
+import me.prouge.tryjump.core.events.game.GameDeathEvent;
 import me.prouge.tryjump.core.game.GameImpl;
 import me.prouge.tryjump.core.game.Phase;
 import me.prouge.tryjump.core.game.player.TryJumpPlayer;
@@ -22,11 +22,11 @@ public class HelpBlockResetCMD implements CommandExecutor {
 
     @Override
     public boolean onCommand(final CommandSender sender, final Command command, final String s, final String[] args) {
-        if (game.getGamePhase() != Phase.Game_running) {
+        if (!(sender instanceof Player) || game.getGamePhase() != Phase.Game_running) {
             return false;
         }
-        TryJumpPlayer tryPlayer = game.getTryPlayer((Player) sender);
 
+        TryJumpPlayer tryPlayer = game.getTryPlayer((Player) sender);
         if (tryPlayer.getHelpBlockLocation() != null && tryPlayer.getUnitDeaths() >= 3) {
             Block block = tryPlayer.getHelpBlockLocation().getBlock();
             block.setType(Material.AIR);

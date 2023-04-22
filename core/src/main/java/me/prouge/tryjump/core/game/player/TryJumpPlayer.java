@@ -2,14 +2,12 @@ package me.prouge.tryjump.core.game.player;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.prouge.tryjump.core.utils.Direction;
 import me.prouge.tryjump.core.utils.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
 
@@ -62,6 +60,11 @@ public class TryJumpPlayer {
 
     @Getter
     @Setter
+    private int kills = 0;
+
+
+    @Getter
+    @Setter
     private float walkedDistanceUntilDeath = 0;
 
     @Getter
@@ -71,8 +74,6 @@ public class TryJumpPlayer {
     @Getter
     @Setter
     private boolean skipped = false;
-
-    private Direction facingDirection;
 
     public TryJumpPlayer(String language, UUID uuid, Location spawnLocation) {
         this.language = language;
@@ -91,7 +92,6 @@ public class TryJumpPlayer {
 
     public void teleportToSpawn() {
         this.getPlayer().teleport(spawnLocation);
-        getFacing();
     }
 
     public void setSpawnLocation(Location location) {
@@ -115,17 +115,12 @@ public class TryJumpPlayer {
         this.unitDeaths = 0;
     }
 
-    private void getFacing() {
-        this.facingDirection = Direction.fromYaw(spawnLocation.getYaw());
-    }
-
-
     public void updateWalkedDistance(final double length) {
         this.walkedDistance += length;
     }
 
-    public void addHelpBlock(){
-        switch(this.moduleId){
+    public void addHelpBlock() {
+        switch (this.moduleId) {
             case 1:
             case 2:
             case 3:
@@ -133,8 +128,8 @@ public class TryJumpPlayer {
                         new ItemBuilder(Material.STAINED_CLAY).
                                 setDyeColor(DyeColor.LIME).
                                 setName("§cHilfsblock")
-                                        .setLore("§8➥ §7Mit §c/reset §7kannst du den Block", "   §7zurückbekommen!",
-                                                "§c§lACHTUNG" + "§8➥ §7Du wirst dabei an den Unit", "   §7Spawn zurück teleportiert!").
+                                .setLore("§8➥ §7Mit §c/reset §7kannst du den Block", "   §7zurückbekommen!",
+                                        "§c§lACHTUNG" + "§8➥ §7Du wirst dabei an den Unit", "   §7Spawn zurück teleportiert!").
                                 toItemStack());
                 break;
             case 4:

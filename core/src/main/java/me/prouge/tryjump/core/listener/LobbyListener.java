@@ -4,7 +4,7 @@ import de.dytanic.cloudnet.ext.bridge.server.BridgeServerHelper;
 import lombok.Getter;
 import lombok.Setter;
 import me.prouge.tryjump.core.TryJump;
-import me.prouge.tryjump.core.events.GameStartEvent;
+import me.prouge.tryjump.core.events.game.GameStartEvent;
 import me.prouge.tryjump.core.events.LobbyStartEvent;
 import me.prouge.tryjump.core.game.GameImpl;
 import me.prouge.tryjump.core.managers.ScoreboardManager;

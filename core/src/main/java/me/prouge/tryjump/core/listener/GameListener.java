@@ -2,6 +2,10 @@ package me.prouge.tryjump.core.listener;
 
 import me.prouge.tryjump.core.TryJump;
 import me.prouge.tryjump.core.events.*;
+import me.prouge.tryjump.core.events.deathmatch.DeathmatchStartEvent;
+import me.prouge.tryjump.core.events.game.GameDeathEvent;
+import me.prouge.tryjump.core.events.game.GamePlayerFinishedEvent;
+import me.prouge.tryjump.core.events.game.GameStartEvent;
 import me.prouge.tryjump.core.game.GameImpl;
 import me.prouge.tryjump.core.game.Phase;
 import me.prouge.tryjump.core.game.player.TryJumpPlayer;
@@ -47,7 +51,7 @@ public class GameListener implements Listener {
         TryJumpPlayer tj = game.getTryPlayer(victim);
         tj.setWalkedDistance(tj.getWalkedDistanceUntilDeath());
         if (!event.isCooldown() && System.currentTimeMillis() - tj.getTimeStamp() <= 3000) {
-            chatWriter.print(tj, Message.ITEM_INSTANT_DEATH_COOLDOWN, null);
+            chatWriter.print(tj, Message.GAME_INSTANT_DEATH_COOLDOWN, null);
             return;
         }
 
@@ -156,7 +160,7 @@ public class GameListener implements Listener {
         tryp.getPlayer().getInventory().clear();
 
         if (tryp.getTotalUnitDeaths() == 0) {
-            chatWriter.print(tryp, Message.MEGA_TOKEN_BOOST, null);
+            chatWriter.print(tryp, Message.GAME_MEGA_TOKEN_BOOST, null);
             tryp.addTokens(2000);
         }
         game.getPlayerArrayList().forEach(tp -> tp.getPlayer().playSound(tp.getPlayer().getLocation(), Sound.WITHER_DEATH, 1, 1));
@@ -192,7 +196,6 @@ public class GameListener implements Listener {
     }
 
     private void shopPhase() {
-        System.out.println("SHOP_PHASE");
         game.setGamePhase(Phase.Game_shop);
 
         game.getPlayerArrayList().forEach(tp -> {

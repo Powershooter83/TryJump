@@ -3,6 +3,7 @@ package me.prouge.tryjump.core.listener;
 import me.prouge.tryjump.core.TryJump;
 import me.prouge.tryjump.core.game.GameImpl;
 import me.prouge.tryjump.core.game.Phase;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -17,6 +18,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 
@@ -106,6 +108,5 @@ public class WorldSecurityListener implements Listener {
             e.setCancelled(true);
         }
     }
-
 
 }
