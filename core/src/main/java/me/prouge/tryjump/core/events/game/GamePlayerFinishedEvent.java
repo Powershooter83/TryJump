@@ -1,4 +1,4 @@
-package me.prouge.tryjump.core.events;
+package me.prouge.tryjump.core.events.game;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,9 +7,11 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 @AllArgsConstructor
-public class DeatchmatchDeathEvent extends Event {
+public class GamePlayerFinishedEvent extends Event {
 
     private static final HandlerList HANDLERS = new HandlerList();
+    @Getter
+    private final Player finisher;
 
     public static HandlerList getHandlerList() {
         return HANDLERS;
@@ -19,11 +21,5 @@ public class DeatchmatchDeathEvent extends Event {
     public HandlerList getHandlers() {
         return HANDLERS;
     }
-
-    @Getter
-    private final Player victim;
-
-    @Getter
-    private final Player attacker;
 
 }

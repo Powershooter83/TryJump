@@ -6,9 +6,9 @@ import de.dytanic.cloudnet.driver.service.ServiceId;
 import de.dytanic.cloudnet.ext.bridge.player.IPlayerManager;
 import de.dytanic.cloudnet.ext.bridge.player.executor.ServerSelectorType;
 import me.prouge.tryjump.core.TryJump;
-import me.prouge.tryjump.core.events.DeatchmatchDeathEvent;
-import me.prouge.tryjump.core.events.DeathmatchEndEvent;
-import me.prouge.tryjump.core.events.DeathmatchStartEvent;
+import me.prouge.tryjump.core.events.deathmatch.DeatchmatchDeathEvent;
+import me.prouge.tryjump.core.events.deathmatch.DeathmatchEndEvent;
+import me.prouge.tryjump.core.events.deathmatch.DeathmatchStartEvent;
 import me.prouge.tryjump.core.game.GameImpl;
 import me.prouge.tryjump.core.game.Phase;
 import me.prouge.tryjump.core.game.player.TryJumpPlayer;
@@ -162,7 +162,7 @@ public class DeathmatchListener implements Listener {
 
 
         if (tryp.getDeathMatchDeaths() == 3) {
-            this.game.getPlayerArrayList().forEach(tp -> chatWriter.print(tp, Message.PLAYER_QUIT_MESSAGE, new String[][]{{"PLAYER", victim.getName()}}));
+            this.game.getPlayerArrayList().forEach(tp -> chatWriter.print(tp, Message.GAME_QUIT_MESSAGE, new String[][]{{"PLAYER", victim.getName()}}));
             victim.setGameMode(GameMode.ADVENTURE);
             victim.getInventory().clear();
             victim.setAllowFlight(true);

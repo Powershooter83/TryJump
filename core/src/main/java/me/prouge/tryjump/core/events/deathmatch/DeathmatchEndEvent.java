@@ -1,4 +1,4 @@
-package me.prouge.tryjump.core.events;
+package me.prouge.tryjump.core.events.deathmatch;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,6 +10,8 @@ import org.bukkit.event.HandlerList;
 public class DeathmatchEndEvent extends Event {
 
     private static final HandlerList HANDLERS = new HandlerList();
+    @Getter
+    private final TryJumpPlayer winner;
 
     public static HandlerList getHandlerList() {
         return HANDLERS;
@@ -19,8 +21,5 @@ public class DeathmatchEndEvent extends Event {
     public HandlerList getHandlers() {
         return HANDLERS;
     }
-
-    @Getter
-    private final TryJumpPlayer winner;
 
 }

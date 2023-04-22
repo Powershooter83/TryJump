@@ -1,15 +1,19 @@
-package me.prouge.tryjump.core.events;
+package me.prouge.tryjump.core.events.game;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.bukkit.entity.Player;
+import lombok.Setter;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 @AllArgsConstructor
-public class GameDeathEvent extends Event {
+public class GameStartEvent extends Event implements Cancellable {
 
     private static final HandlerList HANDLERS = new HandlerList();
+    @Getter
+    @Setter
+    private boolean cancelled;
 
     public static HandlerList getHandlerList() {
         return HANDLERS;
@@ -19,10 +23,5 @@ public class GameDeathEvent extends Event {
     public HandlerList getHandlers() {
         return HANDLERS;
     }
-    @Getter
-    private final Player victim;
-
-    @Getter
-    private final boolean cooldown;
 
 }

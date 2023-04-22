@@ -3,7 +3,7 @@ package me.prouge.tryjump.core.managers;
 import com.google.inject.Singleton;
 import lombok.Getter;
 import lombok.Setter;
-import me.prouge.tryjump.core.events.GamePlayerFinishedEvent;
+import me.prouge.tryjump.core.events.game.GamePlayerFinishedEvent;
 import me.prouge.tryjump.core.game.player.TryJumpPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.scoreboard.DisplaySlot;

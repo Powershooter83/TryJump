@@ -18,11 +18,10 @@ import java.util.stream.Collectors;
 public class MLoader {
 
 
-    @Getter
-    private Map<MDifficulty, List<Module>> modules = new HashMap<>();
-
     ObjectMapper objectMapper = new ObjectMapper();
     SimpleModule simpleModule = new SimpleModule();
+    @Getter
+    private Map<MDifficulty, List<Module>> modules = new HashMap<>();
 
     public MLoader() {
         simpleModule.addDeserializer(Pattern.class, new PatternDeserializer());
@@ -55,10 +54,10 @@ public class MLoader {
         final String MODULES_PATH = "plugins/TryJump-Modules/";
 
         File[] difficultyDirs = {
-                new File(MODULES_PATH + "easy"),
-                new File(MODULES_PATH + "medium"),
-                new File(MODULES_PATH + "hard"),
-                new File(MODULES_PATH + "extreme")
+                new File(MODULES_PATH + MDifficulty.EASY),
+                new File(MODULES_PATH + MDifficulty.MEDIUM),
+                new File(MODULES_PATH + MDifficulty.HARD),
+                new File(MODULES_PATH + MDifficulty.EXTREME)
         };
 
         Map<MDifficulty, List<Module>> modules = new HashMap<>();

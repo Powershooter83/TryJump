@@ -28,7 +28,7 @@ public class ShopListener implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
-        if (!e.getInventory().getName().equals("§6>> §eTryJump Shop") ||
+        if (!e.getInventory().getName().equals(chatWriter.getItemStackName(gameImpl.getTryPlayer((Player) e.getWhoClicked()), Message.SHOP_INVENTORY_NAME)) ||
                 e.getClick().isKeyboardClick()) {
             return;
         }
@@ -85,7 +85,7 @@ public class ShopListener implements Listener {
                     }
                     player.getInventory().addItem(e.getCurrentItem());
                 } else {
-                    chatWriter.print(tryPlayer, Message.LOBBY_SHOP_MONEY, null);
+                    chatWriter.print(tryPlayer, Message.SHOP_NOT_ENOUGH_MONEY, null);
                     player.playSound(player.getLocation(), Sound.ITEM_BREAK, 1, 1);
                 }
         }

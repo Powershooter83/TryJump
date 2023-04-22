@@ -12,6 +12,9 @@ import org.bukkit.event.HandlerList;
 public class LobbyStartEvent extends Event implements Cancellable {
 
     private static final HandlerList HANDLERS = new HandlerList();
+    @Getter
+    @Setter
+    private boolean cancelled;
 
     public static HandlerList getHandlerList() {
         return HANDLERS;
@@ -21,9 +24,5 @@ public class LobbyStartEvent extends Event implements Cancellable {
     public HandlerList getHandlers() {
         return HANDLERS;
     }
-
-    @Getter
-    @Setter
-    private boolean cancelled;
 
 }
