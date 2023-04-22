@@ -46,3 +46,11 @@ DEATHMATCH_SPAWN_PROTECTION: "&6>> &eTryJump &6: &7Du hast 3 Sekunden Spawn-Schu
 DEATHMATCH_ATTACKER_LIVE: "&6>> &eTryJump &6: &7Leben von &6{KILLER} {HEARTS}"
 DEATHMATCH_WINNER: "&6>> &eTryJump &6: &7Der Spieler &6{PLAYER} &7hat das Spiel gewonnen!"
 DEATHMATCH_RESTART: "&6>> &eTryJump &6: &cDer Server startet in 10 Sekunden neu."
+
+# STATS
+GAME_STATS_TITLE: "&6>> &eTryJump &6: &bRundenstatistik:"
+GAME_STATS_KILLS: "&6>> &eTryJump &6: ■ &7Kills: &a{KILLS}"
+GAME_STATS_DEATHS: "&6>> &eTryJump &6: ■ &7Tode: &c{DEATHS}"
+GAME_STATS_UNIT_DEATHS: "&6>> &eTryJump &6: ■ &7Units geschafft: &b{UNITS_DONE}"
+GAME_STATS_UNITS_DONE: "&6>> &eTryJump &6: ■ &7Unit Tode: &a{UNIT_DEATHS}"
+

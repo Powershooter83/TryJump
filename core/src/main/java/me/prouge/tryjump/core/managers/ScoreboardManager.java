@@ -161,7 +161,6 @@ public class ScoreboardManager {
 
 
     public void updateScoreboard(final ArrayList<TryJumpPlayer> playerArrayList, final int mapLength) {
-        System.out.println("test-3");
         time = time.minusSeconds(1);
         playerArrayList.sort((tp1, tp2) -> Float.compare(tp1.getWalkedDistance(), tp2.getWalkedDistance()));
 

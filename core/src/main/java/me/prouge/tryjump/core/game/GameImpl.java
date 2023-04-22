@@ -204,16 +204,13 @@ public class GameImpl implements Game {
                 addedTokens = tryPlayer.getUnitDeaths() >= 3 ? 250 : 500;
                 break;
         }
-        for (TryJumpPlayer tp : this.getPlayerArrayList()) {
-            if (tp.getPlayer() == player) {
-                tp.addTokens(addedTokens);
-                tp.setSpawnLocation(location);
-                chatWriter.print(tp, GAME_COINS_ADD, new String[][]{{"UNITID", String.valueOf(moduleId)}, {"tokens", String.valueOf(addedTokens)}});
-                tp.updateModuleId();
-            }
-        }
 
-        if (moduleId == 11) {
+        tryPlayer.addTokens(addedTokens);
+        tryPlayer.setSpawnLocation(location);
+        chatWriter.print(tryPlayer, GAME_COINS_ADD, new String[][]{{"UNITID", String.valueOf(moduleId)}, {"tokens", String.valueOf(addedTokens)}});
+        tryPlayer.updateModuleId();
+
+        if (moduleId == 10) {
             Bukkit.getServer().getPluginManager().callEvent(new GamePlayerFinishedEvent(player));
         }
     }

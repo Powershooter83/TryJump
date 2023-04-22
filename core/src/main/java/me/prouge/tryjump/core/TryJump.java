@@ -7,6 +7,7 @@ import me.prouge.tryjump.core.inject.InjectionModule;
 import me.prouge.tryjump.core.listener.*;
 import me.prouge.tryjump.core.utils.Language;
 import org.bukkit.Bukkit;
+import org.bukkit.Difficulty;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -62,15 +63,24 @@ public class TryJump extends JavaPlugin {
             this.getConfig().options().copyDefaults(true);
             this.saveConfig();
         }
+
+        loadWorlds();
         new InjectionModule(this);
         registerCommands();
         language.setup();
+        registerListener();
+    }
 
+    private void loadWorlds(){
         World world = new WorldCreator("tryjump").createWorld();
         world.setAutoSave(false);
+        world.setTime(1200);
+        world.setDifficulty(Difficulty.EASY);
+
         World pvp = new WorldCreator("deathmatch").createWorld();
         pvp.setAutoSave(false);
-        registerListener();
+        pvp.setTime(1200);
+        pvp.setDifficulty(Difficulty.EASY);
     }
 
     @Override

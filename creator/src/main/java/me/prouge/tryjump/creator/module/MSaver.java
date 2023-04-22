@@ -66,18 +66,6 @@ public class MSaver {
                                     sign.getLines()));
                             continue;
                         }
-
-//                        if (selected.getType() == Material.FLOWER_POT) {
-//                            System.out.println(position1.getWorld().getBlockAt(x, (int) (y + 1), z));
-//
-//                            FlowerPot flowerpot = (FlowerPot) selected.getState().getData();
-//                            System.out.println(flowerpot);
-//                            blockList.add(new MBlock(x, y, z, selected.getState().getData(),
-//                                    flowerpot.getContents()));
-//                            continue;
-//                        }
-
-
                         blockList.add(new MBlock(x, y, z, selected.getState().getData()));
                     }
                 }

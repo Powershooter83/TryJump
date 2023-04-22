@@ -196,7 +196,6 @@ public class GameListener implements Listener {
     }
 
     private void shopPhase() {
-        System.out.println("SHOP_PHASE");
         game.setGamePhase(Phase.Game_shop);
 
         game.getPlayerArrayList().forEach(tp -> {

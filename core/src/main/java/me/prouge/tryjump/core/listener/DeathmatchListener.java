@@ -18,20 +18,24 @@ import me.prouge.tryjump.core.utils.ItemBuilder;
 import me.prouge.tryjump.core.utils.Message;
 import net.minecraft.server.v1_8_R3.IChatBaseComponent;
 import net.minecraft.server.v1_8_R3.PacketPlayOutTitle;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.inject.Inject;
-import java.util.*;
+import java.util.Collections;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class DeathmatchListener implements Listener {
 
@@ -57,6 +61,7 @@ public class DeathmatchListener implements Listener {
             PacketPlayOutTitle title = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, emptyTitle);
             chatWriter.print(tp, Message.DEATHMATCH_WINNER, new String[][]{{"PLAYER", event.getWinner().getPlayer().getName()}});
             chatWriter.print(tp, Message.DEATHMATCH_RESTART, null);
+            printRoundStats(tp);
             Player player = tp.getPlayer();
             ((CraftPlayer) player).getHandle().playerConnection.sendPacket(title);
             ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.SUBTITLE, chatTitle));
@@ -77,6 +82,15 @@ public class DeathmatchListener implements Listener {
         }, 10 * 20);
 
     }
+
+    private void printRoundStats(TryJumpPlayer tryJumpPlayer) {
+        chatWriter.print(tryJumpPlayer, Message.GAME_STATS_TITLE, null);
+        chatWriter.print(tryJumpPlayer, Message.GAME_STATS_KILLS, new String[][]{{"KILLS", String.valueOf(tryJumpPlayer.getKills())}});
+        chatWriter.print(tryJumpPlayer, Message.GAME_STATS_DEATHS, new String[][]{{"DEATHS", String.valueOf(tryJumpPlayer.getDeathMatchDeaths())}});
+        chatWriter.print(tryJumpPlayer, Message.GAME_STATS_UNIT_DEATHS, new String[][]{{"UNITS_DONE", String.valueOf(tryJumpPlayer.getModuleId())}});
+        chatWriter.print(tryJumpPlayer, Message.GAME_STATS_UNITS_DONE, new String[][]{{"UNIT_DEATHS", String.valueOf(tryJumpPlayer.getTotalUnitDeaths())}});
+    }
+
 
     @EventHandler
     public void onDeathmatchStartEvent(final DeathmatchStartEvent event) {
@@ -115,35 +129,30 @@ public class DeathmatchListener implements Listener {
 
 
     private void updateCompass() {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            Location playerLocation = player.getLocation();
-            List<org.bukkit.entity.Entity> nearbyEntities = new ArrayList<>(playerLocation.getWorld().getNearbyEntities(playerLocation, 50, 50, 50));
+        Bukkit.getOnlinePlayers().forEach(player -> player.setCompassTarget(getNearestPlayer(player).getLocation()));
+    }
 
-            Player nearestPlayer = null;
-            double nearestDistance = Double.MAX_VALUE;
+    private Player getNearestPlayer(Player player) {
+        Player nearest = null;
+        double minDistance = Double.MAX_VALUE;
 
-            for (Entity entity : nearbyEntities) {
-                if (entity instanceof Player) {
-                    Player nearbyPlayer = (Player) entity;
-                    double distance = playerLocation.distance(nearbyPlayer.getLocation());
-
-                    if (distance < nearestDistance) {
-                        nearestPlayer = nearbyPlayer;
-                        nearestDistance = distance;
-                    }
-                }
-            }
-
-            if (nearestPlayer != null) {
-                player.setCompassTarget(nearestPlayer.getLocation());
+        for (Player loopPlayer : Bukkit.getOnlinePlayers().stream().filter(loop -> loop != player).collect(Collectors.toList())) {
+            double distance = loopPlayer.getLocation().distance(player.getLocation());
+            if (distance < minDistance) {
+                nearest = loopPlayer;
+                minDistance = distance;
             }
         }
+        return nearest;
     }
 
     @EventHandler
     public void onDeathmatchDeatchEvent(final DeatchmatchDeathEvent event) {
         Player victim = event.getVictim();
         Player attacker = event.getAttacker();
+        victim.setFireTicks(0);
+
+        victim.getActivePotionEffects().forEach(effect -> victim.removePotionEffect(effect.getType()));
         victim.setHealth(victim.getMaxHealth());
 
         TryJumpPlayer tryp = game.getTryPlayer(victim);
@@ -157,8 +166,9 @@ public class DeathmatchListener implements Listener {
             this.game.getPlayerArrayList().forEach(tp -> chatWriter.print(tp, Message.DEATHMATCH_KILL, new String[][]{
                     {"VICTIM", victim.getName()}, {"KILLER", attacker.getName()}}));
 
-            attacker.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 5 * 20, 0, false, false));
-            Bukkit.getScheduler().scheduleSyncDelayedTask((Plugin) this, () -> attacker.removePotionEffect(PotionEffectType.REGENERATION), 5 * 20);
+            game.getTryPlayer(attacker).setKills(game.getTryPlayer(attacker).getKills() + 1);
+
+            attacker.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 5 * 20, 1, false, false));
 
             double hearts = attacker.getHealth();
             double maxHearts = attacker.getMaxHealth();
@@ -185,7 +195,6 @@ public class DeathmatchListener implements Listener {
             this.game.getPlayerArrayList().forEach(tp -> chatWriter.print(tp, Message.DEATHMATCH_KILL, new String[][]{
                     {"VICTIM", victim.getName()}, {"KILLER", "TNT"}}));
         }
-
 
         if (tryp.getDeathMatchDeaths() == 3) {
             this.game.getPlayerArrayList().forEach(tp -> chatWriter.print(tp, Message.GAME_QUIT_MESSAGE, new String[][]{{"PLAYER", victim.getName()}}));

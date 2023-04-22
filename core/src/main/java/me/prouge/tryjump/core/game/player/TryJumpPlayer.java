@@ -60,6 +60,11 @@ public class TryJumpPlayer {
 
     @Getter
     @Setter
+    private int kills = 0;
+
+
+    @Getter
+    @Setter
     private float walkedDistanceUntilDeath = 0;
 
     @Getter
