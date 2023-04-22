@@ -107,6 +107,7 @@ public class GameImpl implements Game {
                 .orElse(null);
     }
 
+
     private void sendActionbar(TryJumpPlayer p) {
         chatWriter.sendActionbar(p, Message.LOBBY_ACTIONBAR,
                 new String[][]{{"CURRENT_PLAYERS", String.valueOf(this.playerArrayList.size())},
