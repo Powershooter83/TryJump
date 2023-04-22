@@ -14,14 +14,13 @@ import me.prouge.tryjump.core.game.Phase;
 import me.prouge.tryjump.core.game.player.TryJumpPlayer;
 import me.prouge.tryjump.core.managers.ScoreboardManager;
 import me.prouge.tryjump.core.utils.ChatWriter;
+import me.prouge.tryjump.core.utils.ItemBuilder;
 import me.prouge.tryjump.core.utils.Message;
 import net.minecraft.server.v1_8_R3.IChatBaseComponent;
 import net.minecraft.server.v1_8_R3.PacketPlayOutTitle;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -32,8 +31,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.inject.Inject;
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
 
 public class DeathmatchListener implements Listener {
 
@@ -71,7 +69,7 @@ public class DeathmatchListener implements Listener {
             ServiceId serviceId = null;
 
             for (TryJumpPlayer tp : game.getPlayerArrayList()) {
-                serviceId = playerManager.getOnlinePlayer(tp.getUniqueId()).getConnectedService().getServiceId();
+                serviceId = Objects.requireNonNull(playerManager.getOnlinePlayer(tp.getUniqueId())).getConnectedService().getServiceId();
                 playerManager.getPlayerExecutor(tp.getUniqueId()).connectToTask("Lobby", ServerSelectorType.HIGHEST_PLAYERS);
             }
             SpecificCloudServiceProvider service = CloudNetDriver.getInstance().getCloudServiceProvider(serviceId.getUniqueId());
@@ -88,6 +86,7 @@ public class DeathmatchListener implements Listener {
             @Override
             public void run() {
                 scoreboardManager.updateDeathMatchScoreboard(game.getPlayerArrayList());
+                updateCompass();
             }
         }.runTaskTimer(plugin, 0, 20L);
 
@@ -109,10 +108,37 @@ public class DeathmatchListener implements Listener {
                     break;
                 }
             }
+            player.getInventory().addItem(new ItemBuilder(Material.COMPASS).toItemStack());
             index++;
         }
     }
 
+
+    private void updateCompass() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            Location playerLocation = player.getLocation();
+            List<org.bukkit.entity.Entity> nearbyEntities = new ArrayList<>(playerLocation.getWorld().getNearbyEntities(playerLocation, 50, 50, 50));
+
+            Player nearestPlayer = null;
+            double nearestDistance = Double.MAX_VALUE;
+
+            for (Entity entity : nearbyEntities) {
+                if (entity instanceof Player) {
+                    Player nearbyPlayer = (Player) entity;
+                    double distance = playerLocation.distance(nearbyPlayer.getLocation());
+
+                    if (distance < nearestDistance) {
+                        nearestPlayer = nearbyPlayer;
+                        nearestDistance = distance;
+                    }
+                }
+            }
+
+            if (nearestPlayer != null) {
+                player.setCompassTarget(nearestPlayer.getLocation());
+            }
+        }
+    }
 
     @EventHandler
     public void onDeathmatchDeatchEvent(final DeatchmatchDeathEvent event) {
